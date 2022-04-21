@@ -3,7 +3,7 @@ import mido
 import time
 import rtmidi
 
-serialPort = serial.Serial(port = "COM7", baudrate=115200, bytesize=8, timeout=2, stopbits=serial.STOPBITS_ONE)
+serialPort = serial.Serial(port = "COM11", baudrate=115200, bytesize=8, timeout=2, stopbits=serial.STOPBITS_ONE)
 serialString = ''
 
 midiout = rtmidi.MidiOut()
@@ -54,12 +54,14 @@ while(1):
 
         sensorData = (serialString.decode('utf-8')).split('/')
 
-        #print(sensorData)
+        print(serialString)
 
         # Print the contents of the serial data
-        gyro = float(sensorData[0])
-        accel = float(sensorData[1])
-        touch = float(sensorData[2])
+        id = float(sensorData[0])
+        gyro = float(sensorData[1])
+        accel = float(sensorData[2])
+        touch = float(sensorData[3])
+        #print(gyro,accel,touch)
     
     #print(accel)
 
@@ -77,7 +79,7 @@ while(1):
     #print(accel)
 
     can = (note == last_note) and (time.time() - lastDebounceTime > 0.01)
-
+    #print(touch)
     if(touch == 1):
         lastDebounceTime = time.time()
         if(note != last_note):

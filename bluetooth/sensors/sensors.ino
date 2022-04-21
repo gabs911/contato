@@ -136,7 +136,7 @@ void loop() {
     
   
 
-        SerialBT.println(String(ypr_mod)+'/'+String(mediaAccel)+'/'+String(pressed));
+        SerialBT.println("01/" + String(ypr_mod)+'/'+String(mediaAccel)+'/'+String(pressed));
         Serial.println("MIDI SENT");
         Serial.println(String(ypr_mod));
 
