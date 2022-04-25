@@ -80,7 +80,7 @@ while(1):
 
     can = (note == last_note) and (time.time() - lastDebounceTime > 0.01)
     #print(touch)
-    if(touch == 1):
+    if(touch == 1 and (accel>3000)):
         lastDebounceTime = time.time()
         if(note != last_note):
             assignTimes(note[1])
@@ -103,7 +103,7 @@ while(1):
                 midiout.send_message([0x80,note[1],100])
 
     
-    if(accel > 6000 and (time.time() - previousSoundEffectActiv >= soundeEffectInterval)):
+    if(accel > 9000 and (time.time() - previousSoundEffectActiv >= soundeEffectInterval)):
         previousSoundEffectActiv = time.time()
         print("ACCEL DETECTED")
         midiout.send_message([0x90,78,120])
