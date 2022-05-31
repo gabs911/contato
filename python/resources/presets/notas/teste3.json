@@ -1,0 +1,30 @@
+{
+    "nome": "teste 3",
+    "angulo_inicial": 0,
+    "notas": [
+        {
+            "id": "a",
+            "proximo_angulo": 15
+        },
+        {
+            "id": "b",
+            "proximo_angulo": 30
+        },
+        {
+            "id": "c",
+            "proximo_angulo": 45
+        },
+        {
+            "id": "d",
+            "proximo_angulo": 60
+        },
+        {
+            "id": "e",
+            "proximo_angulo": 75
+        },
+        {
+            "id": "f",
+            "proximo_angulo": 90
+        }
+    ]
+}
