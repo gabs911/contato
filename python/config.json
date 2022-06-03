@@ -1,3 +1,4 @@
 {
-    "mode":"teste"
+    "mode":"teste",
+    "porta": "COM11"
 }

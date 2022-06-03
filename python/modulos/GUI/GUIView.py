@@ -1,6 +1,8 @@
-from tkinter import Event, Tk
+from tkinter import Event, StringVar, Tk
 from tkinter.font import Font
-from tkinter.ttk import Button, Frame, Label, Style, Widget
+from tkinter.ttk import Button, Entry, Frame, Label, Spinbox, Style, Widget
+
+from modulos.GUI.GUIController import GUIController
 
 class GUIView:
     BACKGROUND_FRAME = 'Background.TFrame'
@@ -8,25 +10,25 @@ class GUIView:
     DEFAULT_FRAME = 'TFrame'
     
     #Tipo de controller é GUIController, não é possível restringir tipo por causa de deadlock de importações
-    def __init__(self, controller):
+    def __init__(self, controller: GUIController):
         self.controller = controller
         self.selected = ''
         self.FrameToNotePreset = { }
 
     
     def show(self):
-        root = Tk()
-        root.title('Gruppen')
+        self.root = Tk()
+        self.root.title('Gruppen - Contato')
         self.generateStyles()
 
-        rootFrame = Frame(root , padding=[10], style=self.BACKGROUND_FRAME)
+        rootFrame = Frame(self.root , padding=[10], style=self.BACKGROUND_FRAME)
         rootFrame.pack()
 
         self.generateNoteFrame(rootFrame)
         self.generateAccelFrame(rootFrame)
         self.generateButtons(rootFrame)
 
-        root.mainloop()
+        self.root.mainloop()
 
     
     def generateStyles(self):
@@ -91,16 +93,33 @@ class GUIView:
     
     def generateAccelFrame(self, root):
         frame = Frame(root)
-        frame.grid(row=0, column=1)
-        label = Label(frame, text='Hello World')
+        frame.grid(row=0, column=1, padx=5)
+        label = Label(frame, text='Acelerometro')
         label.grid(row=0, column=0)
+        #self.accel = StringVar(root, value="2")
+        self.accel = Spinbox(frame, from_=0, to=5000)
+        self.accel.grid(row=1, column=0)
 
-    
     def generateButtons(self, root):
         frame = Frame(root)
         frame.grid(row=0, column=2, sticky='S')
-        label = Button(frame, text='Mostrar Json Selecionado', command=lambda: print(self.getSelectedNote()))
+        self.buttonText = StringVar(root, value="Tocar")
+        label = Button(frame, textvariable=self.buttonText, command=self.toggleTocar)
         label.grid(row=0, column=0)
+
+    def toggleTocar(self):
+        if (self.buttonText.get() == "Tocar"):
+            self.buttonText.set("Parar")
+            self.controller.start(self.root, self.getGUIInfo())
+        else:
+            self.buttonText.set("Tocar")
+            self.controller.end()
+    
+    def getGUIInfo(self):
+        return {
+            "accel": self.accel.get(),
+            "preset": self.getSelectedNote()
+        }
 
     def getSelectedNote(self):
         try:

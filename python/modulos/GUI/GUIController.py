@@ -1,20 +1,16 @@
 import json
 from tkinter import Tk
 from modulos.EletronicModule import BaseEletronicModule
-from modulos.GUI.GUIView import GUIView
 
 
 class GUIController:
     def __init__(self, eletronicModule: BaseEletronicModule) -> None:
         self.eletronicModule = eletronicModule
-        self.scheduler = " "
+        self.scheduler = ""
     
     RESOURCE_LOCATION = "resources/presets/notas/"
     
     NAMES = ["teste.json", "teste2.json", "teste3.json"]
-
-    def view(self) -> GUIView:
-        return GUIView(self)
     
     def getAccelPresets(self) -> list[int]:
         return [1,2,3]
@@ -26,14 +22,52 @@ class GUIController:
                 note_list.append(json.load(jsonfile))
         return note_list
 
-    def process(self):
-        pass
-
-    def start(self, tk: Tk):
-        self.scheduler = tk.after(2000, self.process)
+    def start(self, tk: Tk, GUIData):
+        self.GUIData = GUIData
+        self.scheduler = tk.after(10, self.process)
         self.tk = tk
     
     def end(self):
         self.tk.after_cancel(self.scheduler)
+
+    def process(self):
+        '''@private - Função para uso interno do GUIController'''
+        eletronicData = self.eletronicModule.getData()
+        canal = self.selectCanal(self.GUIData, eletronicData)
+        nota = self.selectNota(self.GUIData, eletronicData)
+        on = self.selectOn(self.GUIData, eletronicData)
+        if(nota):
+            self.send(canal, nota, on)
+        else:
+            print("no note")
+        self.scheduler = self.tk.after(1000, self.process)
+
+    def selectCanal(self, GUIData, eletronicData):
+        return ""
+    
+    def selectNota(self, GUIData, eletronicData):
+        preset = GUIData["preset"]
+        giro = eletronicData["giroscopio"]
+        if (giro <= preset["angulo_inicial"]):
+            return False
+        for nota in preset["notas"]:
+            if giro <= nota["proximo_angulo"]:
+                return nota["id"]
+        return False
+
+    def selectOn(self, GUIData, eletronicData):
+        return True
+
+    def send(self, canal, nota: str, on = False):
+        '''
+        Envia a informação para o Midiout
+        :param 1 canal: canal em que será enviada a nota
+        :param 2 nota: nota a ser tocada
+        :param 3 on: Se é para iniciar ou parar uma nota: True - > liga, False -> desliga
+        '''
+        conversor = { "C": 60, "D": 62, "E": 64, "F": 65, "G": 67}
+
+        print(f"canal: {canal}\nnota: {nota}\non: {on}")
+        print("-----------------------------------------------------")
 
 

@@ -1,5 +1,6 @@
 from modulos.EletronicModule import BaseEletronicModule
 from modulos.GUI.GUIController import GUIController
+from modulos.GUI.GUIView import GUIView
 
 
 class GUIModule:
@@ -7,5 +8,5 @@ class GUIModule:
         self.eletronicModule = eletronicModule
 
     def run(self):
-        tester = self.eletronicModule.getData()
-        GUIController(self.eletronicModule).view().show()
+        controller = GUIController(self.eletronicModule)
+        GUIView(controller).show()
