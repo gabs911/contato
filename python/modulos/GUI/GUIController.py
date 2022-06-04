@@ -36,11 +36,12 @@ class GUIController:
         canal = self.selectCanal(self.GUIData, eletronicData)
         nota = self.selectNota(self.GUIData, eletronicData)
         on = self.selectOn(self.GUIData, eletronicData)
-        if(nota):
+        if(nota is not None):
             self.send(canal, nota, on)
         else:
             print("no note")
-        self.scheduler = self.tk.after(1000, self.process)
+        #pode aumentar o intervalo para testar com o Mock
+        self.scheduler = self.tk.after(10, self.process)
 
     def selectCanal(self, GUIData, eletronicData):
         return ""
@@ -49,11 +50,11 @@ class GUIController:
         preset = GUIData["preset"]
         giro = eletronicData["giroscopio"]
         if (giro <= preset["angulo_inicial"]):
-            return False
+            return None
         for nota in preset["notas"]:
             if giro <= nota["proximo_angulo"]:
                 return nota["id"]
-        return False
+        return None
 
     def selectOn(self, GUIData, eletronicData):
         return True

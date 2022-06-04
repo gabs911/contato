@@ -3,14 +3,15 @@ from typing import Any
 
 class BaseEletronicModule:
     '''Uma 'interface' que vai definir os métodos em comum no Mock e no real e prover a documentação das funções'''
+        
+    def setup(self):
+        '''faz o setup do que vai ser necessário no programa'''
+        
     def getData(self) -> Any:
         ''' 
         busca dados da identificação do dispositivo eletrônico, giroscópio, acelerometro e toque
         :return: os dados na forma de um json {"id", "giroscopio", "acelerometro", "toque"}
         '''
-        
-    def setup(self):
-        '''faz o setup do que vai ser necessário no programa'''
 
     def send(self, info):
         '''

@@ -92,12 +92,20 @@ class GUIView:
 
     
     def generateAccelFrame(self, root):
+        def accelValidation(newValue):
+            try:
+                int(newValue)
+                return True
+            except ValueError:
+                return False
+                
         frame = Frame(root)
         frame.grid(row=0, column=1, padx=5)
         label = Label(frame, text='Acelerometro')
         label.grid(row=0, column=0)
         #self.accel = StringVar(root, value="2")
-        self.accel = Spinbox(frame, from_=0, to=5000)
+        self.accel = Spinbox(frame, from_=0, to=500000, validate='all', validatecommand=(frame.register(accelValidation), '%P'))
+        self.accel.set(0)
         self.accel.grid(row=1, column=0)
 
     def generateButtons(self, root):
@@ -109,8 +117,10 @@ class GUIView:
 
     def toggleTocar(self):
         if (self.buttonText.get() == "Tocar"):
-            self.buttonText.set("Parar")
-            self.controller.start(self.root, self.getGUIInfo())
+            guiInfo = self.getGUIInfo()
+            if(type(guiInfo["preset"]) is not str):
+                self.buttonText.set("Parar")
+                self.controller.start(self.root, self.getGUIInfo())
         else:
             self.buttonText.set("Tocar")
             self.controller.end()
@@ -124,7 +134,8 @@ class GUIView:
     def getSelectedNote(self):
         try:
             return self.FrameToNotePreset[self.selected]
-        except:
-            return 'Nenhum item selecionado'
+        except KeyError:
+            print("Nenhum preset selecionado")
+            return "Nenhum item selecionado"
 
   
