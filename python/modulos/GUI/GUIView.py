@@ -127,7 +127,7 @@ class GUIView:
     
     def getGUIInfo(self):
         return {
-            "accel": self.accel.get(),
+            "accel": int(self.accel.get()),
             "preset": self.getSelectedNote()
         }
 

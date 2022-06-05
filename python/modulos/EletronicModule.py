@@ -1,5 +1,5 @@
 from typing import Any
-
+from serial import Serial, STOPBITS_ONE
 
 class BaseEletronicModule:
     '''Uma 'interface' que vai definir os métodos em comum no Mock e no real e prover a documentação das funções'''
@@ -24,5 +24,20 @@ class EletronicModule(BaseEletronicModule):
     def __init__(self, porta) -> None:
         self.porta = porta
 
+
     def setup(self):
         super().setup()
+        self.serialPort = Serial(port = self.porta, baudrate=115200, bytesize=8, timeout=2, stopbits=STOPBITS_ONE)
+
+    def getData(self) -> Any:
+        super().getData()
+        if(self.serialPort.in_waiting > 0):
+            serialString = self.serialPort.readline()
+            sensorData = (serialString.decode('utf-8').split('/'))
+
+            return {
+                "id": sensorData[0],
+                "giroscopio": sensorData[1],
+                "acelerometro": sensorData[2],
+                "toque": sensorData[3]
+            }

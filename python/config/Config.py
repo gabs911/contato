@@ -6,7 +6,7 @@ from modulos.MockEletronicModule import MockEletronicModule
 
 environmentEletronic = {
     "teste" : lambda prop: MockEletronicModule(),
-    "homologacao": lambda prop: EletronicModule(prop["porta"])
+    "producao": lambda prop: EletronicModule(prop["porta"])
 }
 
 class Config:
