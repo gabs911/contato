@@ -3,28 +3,24 @@
     "angulo_inicial": 0,
     "notas": [
         {
-            "id": "A",
+            "id": "C",
             "proximo_angulo": 15
         },
         {
-            "id": "B",
+            "id": "D",
             "proximo_angulo": 30
         },
         {
-            "id": "C",
+            "id": "E",
             "proximo_angulo": 45
         },
         {
-            "id": "D",
+            "id": "F",
             "proximo_angulo": 60
         },
         {
-            "id": "E",
+            "id": "G",
             "proximo_angulo": 75
-        },
-        {
-            "id": "F",
-            "proximo_angulo": 90
         }
     ]
 }

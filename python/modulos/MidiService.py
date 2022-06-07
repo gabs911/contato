@@ -10,8 +10,8 @@ class MidiService:
     CONVERSOR_HEXADECIMAL = {
         (0, True): 0x80,
         (0, False): 0x90,
-        (1, True): 0x80,
-        (1, False): 0x90
+        (1, True): 0x81,
+        (1, False): 0x91
         }
 
     def send(self, canal, on, note, velocity):
