@@ -5,10 +5,10 @@ from modulos.MidiService import MidiService
 
 
 class GUIModule:
-    def __init__(self, eletronicModule: BaseEletronicModule) -> None:
+    def __init__(self, eletronicModule: BaseEletronicModule, midiService: MidiService) -> None:
         self.eletronicModule = eletronicModule
+        self.midiService = midiService
 
     def run(self):
-        midiService = MidiService()
-        controller = GUIController(self.eletronicModule, midiService)
+        controller = GUIController(self.eletronicModule, self.midiService)
         GUIView(controller).show()

@@ -6,7 +6,7 @@
 
 ### Instalando Dependências
 
-O projeto utiliza python 3.9.
+O projeto utiliza python 3.9.<br>
 Para instalar as dependências do projeto, garanta que a versão do pip seja 22.0.4 ou posterior e rode o arquivo [install_dependencies.sh](install_dependencies.sh) no terminal.
 
 ### Executando a Aplicação

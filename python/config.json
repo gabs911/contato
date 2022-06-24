@@ -1,4 +1,5 @@
 {
     "mode":"teste",
-    "porta": "COM11"
+    "porta": "COM11",
+    "midi_port": 1
 }

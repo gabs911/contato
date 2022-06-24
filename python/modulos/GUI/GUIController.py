@@ -92,8 +92,6 @@ class GUIController:
         :param 2 nota: nota a ser tocada
         :param 3 on: Se é para iniciar ou parar uma nota: True - > liga, False -> desliga
         '''
-        self.midiService(canal, on, self.CONVERSOR[nota], velocity)
-        print(f"canal: {canal}\nnota: {nota}\non: {on}\nvelocity: {velocity}")
-        print("-----------------------------------------------------")
+        self.midiService.send(canal, on, self.CONVERSOR[nota], velocity)
 
 

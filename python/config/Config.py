@@ -2,11 +2,19 @@ import json
 from config.App import App
 from modulos.EletronicModule import EletronicModule
 from modulos.MockEletronicModule import MockEletronicModule
+from modulos.MidiService import MidiService, MockMidiService
 
+TESTE_STRING = "teste"
+PRODUCAO_STRING = "producao"
 
-environmentEletronic = {
-    "teste" : lambda prop: MockEletronicModule(),
-    "producao": lambda prop: EletronicModule(prop["porta"])
+EletronicModuleMap = {
+    TESTE_STRING : lambda prop: MockEletronicModule(),
+    PRODUCAO_STRING: lambda prop: EletronicModule(prop["porta"])
+}
+
+MidiServiceMap = {
+    TESTE_STRING: lambda prop: MockMidiService(),
+    PRODUCAO_STRING: lambda prop: MidiService(prop["midi_port"])
 }
 
 class Config:
@@ -20,4 +28,4 @@ class Config:
 
     def createApp(self) -> App:
         mode = self.properties["mode"]
-        return App(mode, environmentEletronic[mode](self.properties))
+        return App(mode, EletronicModuleMap[mode](self.properties), MidiServiceMap[mode](self.properties))
