@@ -16,7 +16,7 @@ class GUIController:
     
     NAMES = ["teste.json", "teste2.json", "teste3.json"]
     
-    def getAccelPresets(self) -> list[int]:
+    def getAccelPresets(self) -> list:
         return [1,2,3]
 
     def getNotePresets(self) -> list:
@@ -40,16 +40,18 @@ class GUIController:
     def process(self):
         '''@private - Função para uso interno do GUIController'''
         eletronicData = self.eletronicModule.getData()
-        self.processToque(eletronicData)
-        self.processAccel(eletronicData)
+        print(eletronicData)
+        if(eletronicData != None):
+            self.processToque(eletronicData)
+            self.processAccel(eletronicData)
         # pode aumentar o intervalo para testar com o Mock
-        self.scheduler = self.tk.after(100, self.process) # chama a si mesmo depois de um determinado período de tempo
+        self.scheduler = self.tk.after(1, self.process) # chama a si mesmo depois de um determinado período de tempo
     
     def processToque(self, eletronicData):
         TOQUE_NOTE_DURATION = 200 # em milisegundos
         CANAL = 0
         nota = self.selecionaNota(self.GUIData, eletronicData)
-        if(nota is not None) and (eletronicData["toque"] == 1) and self.permite_nota[nota]:
+        if(nota is not None) and (int(eletronicData["toque"]) < 30) and self.permite_nota[nota]:
             self.send(CANAL, nota, self.TOUCH_NOTE_VELOCITY)
             self.tk.after(TOQUE_NOTE_DURATION, lambda: self.send(CANAL, nota, self.TOUCH_NOTE_VELOCITY, False))
             self.permite_nota[nota] = False
@@ -62,10 +64,10 @@ class GUIController:
     def selecionaNota(self, GUIData, eletronicData):
         preset = GUIData["preset"]
         giro = eletronicData["giroscopio"]
-        if (giro <= preset["angulo_inicial"]):
+        if (float(giro) <= preset["angulo_inicial"]):
             return None
         for nota in preset["notas"]:
-            if giro <= nota["proximo_angulo"]:
+            if float(giro) <= nota["proximo_angulo"]:
                 return nota["id"]
         return None
 
@@ -73,7 +75,7 @@ class GUIController:
         CANAL = 1
         NOTA = "accel"
         ACCEL_NOTE_DURATION = 200 # em milisegundos
-        if(eletronicData["acelerometro"] >= self.GUIData["accel"]) and self.permite_accel:
+        if(float(eletronicData["acelerometro"]) >= self.GUIData["accel"]) and self.permite_accel:
             self.send(CANAL, NOTA, self.ACCEL_NOTE_VELOCITY)
             self.tk.after(ACCEL_NOTE_DURATION, lambda: self.send(CANAL, NOTA, self.ACCEL_NOTE_VELOCITY, False))
             self.permite_accel = False

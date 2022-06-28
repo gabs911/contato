@@ -8,14 +8,16 @@ class MidiService:
         pass
     
     CONVERSOR_HEXADECIMAL = {
-        (0, True): 0x80,
-        (0, False): 0x90,
-        (1, True): 0x81,
-        (1, False): 0x91
+        (0, False): 0x80,
+        (0, True): 0x90,
+        (1, False): 0x81,
+        (1, True): 0x91
         }
 
     def send(self, canal, on, note, velocity):
-        self.midiout.send_message(self.CONVERSOR_HEXADECIMAL[(canal, on)], note, velocity)
+        self.midiout.send_message([self.CONVERSOR_HEXADECIMAL[(canal, on)], note, velocity])
+        print(f"canal: {canal}\nnota: {note}\non: {on}\nvelocity: {velocity}")
+        print("-----------------------------------------------------")
         pass
 
 class MockMidiService(MidiService):
