@@ -13,7 +13,9 @@ class GUIView:
     def __init__(self, controller: GUIController):
         self.controller = controller
         self.selected = ''
+        self.accelSelect = ''
         self.FrameToNotePreset = { }
+        self.FrameToAccelPreset = { }
 
     
     def show(self):
@@ -107,6 +109,43 @@ class GUIView:
         self.accel = Spinbox(frame, from_=0, to=500000, validate='all', validatecommand=(frame.register(accelValidation), '%P'))
         self.accel.set(0)
         self.accel.grid(row=1, column=0)
+        self.generateAccelPresetFrame(frame)
+
+    def generateAccelPresetFrame(self, root):
+        frame = Frame(root, padding=[5], style=self.PRESET_BACKGROUND_FRAME)
+        frame.grid(row=2, column=0)
+        for item in self.controller.getAccelPresets():
+            self.generateAccelPreset(frame, item)
+
+    def generateAccelPreset(self, root, item):
+        def select(widget: Widget):
+            widget.state(['selected'])
+            for child in widget.children.values():
+                select(child)
+        
+        def unselect(widget: Widget):
+            widget.state(['!selected'])
+            for child in widget.children.values():
+                unselect(child)
+       
+        def mouseFunc(widget: Widget):
+            if (type(self.selected) == Frame):
+                unselect(self.accelSelect)
+            self.accelSelect = widget
+            select(widget)
+        
+        frame = Frame(root, padding=[5], style=self.DEFAULT_FRAME)
+        frame.bind('<Button-1>', (lambda e: mouseFunc(e.widget)))
+        frame.pack()
+
+        #nome do preset
+        label_nome = Label(frame, text= item['nome'])
+        label_nome.bind('<Button-1>', (lambda e: mouseFunc(e.widget.master)))
+        label_nome.grid(row=0, column=0, columnspan=12, sticky='W')
+
+        self.FrameToAccelPreset[frame] = item
+
+        
 
     def generateButtons(self, root):
         frame = Frame(root)
@@ -118,7 +157,7 @@ class GUIView:
     def toggleTocar(self):
         if (self.buttonText.get() == "Tocar"):
             guiInfo = self.getGUIInfo()
-            if(type(guiInfo["preset"]) is not str):
+            if(type(guiInfo["preset"]) is not str) and (type(guiInfo["accel_preset"]) is not str):
                 self.buttonText.set("Parar")
                 self.controller.start(self.root, self.getGUIInfo())
         else:
@@ -128,8 +167,16 @@ class GUIView:
     def getGUIInfo(self):
         return {
             "accel": int(self.accel.get()),
+            "accel_preset" : self.getSelectedAccel(),
             "preset": self.getSelectedNote()
         }
+    
+    def getSelectedAccel(self):
+        try:
+            return self.FrameToAccelPreset[self.accelSelect]
+        except KeyError:
+            print("Nenhum preset de acelerometro selecionado")
+            return "Nenhum item selecionado"
 
     def getSelectedNote(self):
         try:
