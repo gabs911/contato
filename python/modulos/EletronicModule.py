@@ -37,7 +37,7 @@ class EletronicModule(BaseEletronicModule):
 
             return {
                 "id": sensorData[0],
-                "giroscopio": sensorData[1],
-                "acelerometro": sensorData[2],
-                "toque": sensorData[3]
+                "giroscopio": float(sensorData[1]),
+                "acelerometro": float(sensorData[2]),
+                "toque": int(sensorData[3])
             }
