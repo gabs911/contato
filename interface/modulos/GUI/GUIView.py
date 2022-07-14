@@ -16,7 +16,11 @@ class GUIView:
         self.accelSelect = ''
         self.FrameToNotePreset = { }
         self.FrameToAccelPreset = { }
-
+        self.data = {
+            "accel": 0,
+            "accel_preset": '',
+            "note_preset": ''
+        }
     
     def show(self):
         self.root = Tk()
@@ -32,7 +36,6 @@ class GUIView:
 
         self.root.mainloop()
 
-    
     def generateStyles(self):
         style = Style()
         style.configure(self.BACKGROUND_FRAME, background='white')
@@ -45,14 +48,12 @@ class GUIView:
             foreground=[('selected', 'black')]
         )
 
-    
     def generateNoteFrame(self, root):
         frame = Frame(root, padding=[5], style=self.PRESET_BACKGROUND_FRAME)
         frame.grid(row=0, column=0)
         for item in self.controller.getNotePresets():
             self.generateNotePreset(item, frame)
 
-    
     def generateNotePreset(self, item, root):       
         def select(widget: Widget):
             widget.state(['selected'])
@@ -67,7 +68,7 @@ class GUIView:
         def mouseFunc(widget: Widget):
             if (type(self.selected) == Frame):
                 unselect(self.selected)
-            self.selected = widget
+            self.data["note_preset"] = self.FrameToNotePreset[widget]
             select(widget)
 
         frame = Frame(root, padding=[5], style=self.DEFAULT_FRAME)
@@ -92,7 +93,6 @@ class GUIView:
             nota_valor_final.grid(row=2, column=2*i + 2)
         self.FrameToNotePreset[frame] = item
 
-    
     def generateAccelFrame(self, root):
         def accelValidation(newValue):
             try:
@@ -144,8 +144,6 @@ class GUIView:
         label_nome.grid(row=0, column=0, columnspan=12, sticky='W')
 
         self.FrameToAccelPreset[frame] = item
-
-        
 
     def generateButtons(self, root):
         frame = Frame(root)

@@ -1,5 +1,5 @@
 {
-    "mode":"producao",
+    "mode":"teste",
     "porta": "COM4",
     "midi_port": 1
 }
