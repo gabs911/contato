@@ -3,6 +3,7 @@ from tkinter import Tk
 from modulos.EletronicModule import BaseEletronicModule
 from modulos.FileService import FileService
 from modulos.MidiService import MidiService
+from modulos.GUI.GUIData import GUIData
 
 
 class GUIController:
@@ -21,7 +22,7 @@ class GUIController:
         return self.fileService.getNotePresets()
 
     INTERVALO_DE_CHECAGEM = 1
-    def start(self, tk: Tk, GUIData):
+    def start(self, tk: Tk, GUIData: GUIData):
         self.GUIData = GUIData
         self.scheduler = tk.after(self.INTERVALO_DE_CHECAGEM, self.process)
         self.tk = tk
@@ -32,7 +33,8 @@ class GUIController:
     def process(self):
         '''@private - Função para uso interno do GUIController'''
         eletronicData = self.eletronicModule.getData()
-        print(eletronicData)
+        print(self.GUIData.getNotePreset()["nome"])
+        #print(eletronicData)
         if(eletronicData != None):
             self.processToque(eletronicData)
             self.processAccel(eletronicData)
@@ -53,8 +55,8 @@ class GUIController:
                 self.permite_nota[nota] = True
             self.tk.after(10, lambda: setPermiteNotaTrue(self, nota))
     
-    def selecionaNota(self, GUIData, eletronicData):
-        preset = GUIData["preset"]
+    def selecionaNota(self, GUIData: GUIData, eletronicData):
+        preset = GUIData.getNotePreset()
         giro = eletronicData["giroscopio"]
         if (giro <= preset["angulo_inicial"]):
             return None
@@ -63,29 +65,34 @@ class GUIController:
                 return nota["id"]
         return None
 
-    ACCEL_NOTE_VELOCITY = 120
     def processAccel(self, eletronicData):
-        CANAL = 1
-        NOTA = "accel"
+        ACCEL_PRESET = self.GUIData.getAccelPreset()
+        CANAL = ACCEL_PRESET["canal"]
+        NOTA = ACCEL_PRESET["nota"]
+        ACCEL_NOTE_VELOCITY = 120
         ACCEL_NOTE_DURATION = 200 # em milisegundos
-        if(eletronicData["acelerometro"] >= self.GUIData["accel"]) and self.permite_accel:
-            self.send(CANAL, NOTA, self.ACCEL_NOTE_VELOCITY)
-            self.tk.after(ACCEL_NOTE_DURATION, lambda: self.send(CANAL, NOTA, self.ACCEL_NOTE_VELOCITY, False))
+        if(eletronicData["acelerometro"] >= self.GUIData.getAccel()) and self.permite_accel:
+            self.send(CANAL, NOTA, ACCEL_NOTE_VELOCITY)
+            self.tk.after(ACCEL_NOTE_DURATION, lambda: self.send(CANAL, NOTA, ACCEL_NOTE_VELOCITY, False))
             self.permite_accel = False
 
             def setPermiteAccelTrue(self: GUIController):
                 self.permite_accel = True
             self.tk.after(1000, lambda: setPermiteAccelTrue(self))
     
-    CONVERSOR = { "C": 60, "D": 62, "E": 64, "F": 65, "G": 67, "accel": 78 }
+    CONVERSOR = { "C": 60, "D": 62, "E": 64, "F": 65, "G": 67 }
+    def converteNota(self, nota) -> int:
+        if(type(nota) is str):
+            return self.CONVERSOR[nota]
+        return nota
 
-    def send(self, canal: int, nota: str, velocity: int, on = True):
+    def send(self, canal: int, nota, velocity: int, on = True):
         '''
         Envia a informação para o Midiout
         :param 1 canal: canal em que será enviada a nota
         :param 2 nota: nota a ser tocada
         :param 3 on: Se é para iniciar ou parar uma nota: True - > liga, False -> desliga
         '''
-        self.midiService.send(canal, on, self.CONVERSOR[nota], velocity)
+        self.midiService.send(canal, on, self.converteNota(nota), velocity)
 
 

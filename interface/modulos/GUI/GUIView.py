@@ -3,24 +3,20 @@ from tkinter.font import Font
 from tkinter.ttk import Button, Entry, Frame, Label, Spinbox, Style, Widget
 
 from modulos.GUI.GUIController import GUIController
+from modulos.GUI.GUIData import GUIData
 
 class GUIView:
     BACKGROUND_FRAME = 'Background.TFrame'
     PRESET_BACKGROUND_FRAME = 'Preset.Background.TFrame'
     DEFAULT_FRAME = 'TFrame'
     
-    #Tipo de controller é GUIController, não é possível restringir tipo por causa de deadlock de importações
     def __init__(self, controller: GUIController):
         self.controller = controller
         self.selected = ''
-        self.accelSelect = ''
+        self.selectedAccelPreset = ''
         self.FrameToNotePreset = { }
         self.FrameToAccelPreset = { }
-        self.data = {
-            "accel": 0,
-            "accel_preset": '',
-            "note_preset": ''
-        }
+        self.data = GUIData()
     
     def show(self):
         self.root = Tk()
@@ -68,7 +64,8 @@ class GUIView:
         def mouseFunc(widget: Widget):
             if (type(self.selected) == Frame):
                 unselect(self.selected)
-            self.data["note_preset"] = self.FrameToNotePreset[widget]
+            self.data.notePreset = self.FrameToNotePreset[widget]
+            self.selected = widget
             select(widget)
 
         frame = Frame(root, padding=[5], style=self.DEFAULT_FRAME)
@@ -129,9 +126,10 @@ class GUIView:
                 unselect(child)
        
         def mouseFunc(widget: Widget):
-            if (type(self.selected) == Frame):
-                unselect(self.accelSelect)
-            self.accelSelect = widget
+            if (type(self.selectedAccelPreset) == Frame):
+                unselect(self.selectedAccelPreset)
+            self.data.accelPreset = self.FrameToAccelPreset[widget]
+            self.selectedAccelPreset = widget
             select(widget)
         
         frame = Frame(root, padding=[5], style=self.DEFAULT_FRAME)
@@ -155,32 +153,15 @@ class GUIView:
     def toggleTocar(self):
         if (self.buttonText.get() == "Tocar"):
             guiInfo = self.getGUIInfo()
-            if(type(guiInfo["preset"]) is not str) and (type(guiInfo["accel_preset"]) is not str):
+            if(guiInfo.getAccelPreset != None) and (guiInfo.getNotePreset() != None):
                 self.buttonText.set("Parar")
                 self.controller.start(self.root, self.getGUIInfo())
         else:
             self.buttonText.set("Tocar")
             self.controller.end()
     
-    def getGUIInfo(self):
-        return {
-            "accel": int(self.accel.get()),
-            "accel_preset" : self.getSelectedAccel(),
-            "preset": self.getSelectedNote()
-        }
-    
-    def getSelectedAccel(self):
-        try:
-            return self.FrameToAccelPreset[self.accelSelect]
-        except KeyError:
-            print("Nenhum preset de acelerometro selecionado")
-            return "Nenhum item selecionado"
-
-    def getSelectedNote(self):
-        try:
-            return self.FrameToNotePreset[self.selected]
-        except KeyError:
-            print("Nenhum preset selecionado")
-            return "Nenhum item selecionado"
+    def getGUIInfo(self) -> GUIData:
+        self.data.accel = int(self.accel.get())
+        return self.data
 
   
