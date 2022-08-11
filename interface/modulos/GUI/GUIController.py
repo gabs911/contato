@@ -23,17 +23,19 @@ class GUIController:
 
     INTERVALO_DE_CHECAGEM = 1
     def start(self, tk: Tk, GUIData: GUIData):
+        self.eletronicModule.setup()
         self.GUIData = GUIData
         self.scheduler = tk.after(self.INTERVALO_DE_CHECAGEM, self.process)
         self.tk = tk
     
     def end(self):
         self.tk.after_cancel(self.scheduler)
+        self.eletronicModule.teardown()
 
     def process(self):
         '''@private - Função para uso interno do GUIController'''
+        self.GUIData.setButtonState("iniciado")
         eletronicData = self.eletronicModule.getData()
-        print(self.GUIData.getNotePreset()["nome"])
         #print(eletronicData)
         if(eletronicData != None):
             self.processToque(eletronicData)

@@ -146,18 +146,19 @@ class GUIView:
     def generateButtons(self, root):
         frame = Frame(root)
         frame.grid(row=0, column=2, sticky='S')
-        self.buttonText = StringVar(root, value="Tocar")
-        label = Button(frame, textvariable=self.buttonText, command=self.toggleTocar)
-        label.grid(row=0, column=0)
+        self.data.buttonText = StringVar(root, value="Tocar")
+        self.button = Button(frame, textvariable=self.data.buttonText, command=self.toggleTocar)
+        self.data.button = self.button
+        self.button.grid(row=0, column=0)
 
     def toggleTocar(self):
-        if (self.buttonText.get() == "Tocar"):
+        if (self.data.buttonText.get() == "Tocar"):
             guiInfo = self.getGUIInfo()
             if(guiInfo.getAccelPreset != None) and (guiInfo.getNotePreset() != None):
-                self.buttonText.set("Parar")
-                self.controller.start(self.root, self.getGUIInfo())
-        else:
-            self.buttonText.set("Tocar")
+                self.data.setButtonState("iniciar")
+                self.root.after(1, lambda: self.controller.start(self.root, self.getGUIInfo()))
+        elif (self.data.buttonText.get() == "Parar"):
+            self.data.setButtonState("parado")
             self.controller.end()
     
     def getGUIInfo(self) -> GUIData:

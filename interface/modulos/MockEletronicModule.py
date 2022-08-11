@@ -1,3 +1,4 @@
+from time import sleep
 from modulos.EletronicModule import BaseEletronicModule
 
 class MockEletronicModule(BaseEletronicModule):
@@ -7,6 +8,9 @@ class MockEletronicModule(BaseEletronicModule):
          (-1, 0), (-1, 0), (-1, 1), (49, 0), (100, 0), (90, 0)]
         self.data_index = 0
 
+    def setup(self):
+        super().setup()
+        sleep(2)
 
     def getData(self):
         giro = -1
@@ -22,5 +26,6 @@ class MockEletronicModule(BaseEletronicModule):
         }
 
     
-    def send(self, info):
-        return super().send(info)
+    def teardown(self):
+        super().teardown()
+        self.data_index = 0

@@ -14,7 +14,6 @@ class App:
     #o método run vai definir o algoritmo do 
     def run(self):
         print("Seu ambiente é: " + self.message)
-        self.eletronicModule.setup()
         gui = GUIModule(self.eletronicModule, self.midiService)
         gui.run()
 

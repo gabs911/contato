@@ -1,16 +1,18 @@
 import json
+from os import listdir
 
 
 class FileService:
-    def __init__(self) -> None:
-        pass
-
     NOTE_PRESET_LOCATION = "resources/presets/notas/"
-    NOTE_PRESET_NAMES = ["teste.json", "teste2.json", "teste3.json"]
-
     ACCEL_PRESET_LOCATION = "resources/presets/acelerometro/"
-    ACCEL_PRESET_NAMES = ["vidro.json", "trovoes.json", "lucas1.json", "lucas2.json", "la.json"]
     
+    def __init__(self) -> None:
+        self.ACCEL_PRESET_NAMES = filter(self.isJson, listdir(self.ACCEL_PRESET_LOCATION))
+        self.NOTE_PRESET_NAMES = filter(self.isJson, listdir(self.NOTE_PRESET_LOCATION))
+    
+    def isJson(self, s: str):
+        return s.endswith(".json")
+
     def getAccelPresets(self) -> list:
         accel_list = []
         for name in self.ACCEL_PRESET_NAMES:

@@ -13,11 +13,8 @@ class BaseEletronicModule:
         :return: os dados na forma de um json {"id", "giroscopio", "acelerometro", "toque"}
         '''
 
-    def send(self, info):
-        '''
-        aceita um valor para enviar para o processo eletronico
-        :param1 info: json specificando a nota a ser tocada
-        '''
+    def teardown(self):
+        pass
 
 #implementacao da parte que vai interagir com as partes eletronicas
 class EletronicModule(BaseEletronicModule):
@@ -41,3 +38,6 @@ class EletronicModule(BaseEletronicModule):
                 "acelerometro": float(sensorData[2]),
                 "toque": int(sensorData[3])
             }
+    
+    def teardown(self):
+        self.serialPort.close()
