@@ -1,5 +1,6 @@
 import json
 from tkinter import Tk
+from modulos.GUI.GUIData import GUIButtonState
 from modulos.EletronicModule import BaseEletronicModule
 from modulos.FileService import FileService
 from modulos.MidiService import MidiService
@@ -34,7 +35,7 @@ class GUIController:
 
     def process(self):
         '''@private - Função para uso interno do GUIController'''
-        self.GUIData.setButtonState("iniciado")
+        self.GUIData.setButtonState(GUIButtonState.INICIADO)
         eletronicData = self.eletronicModule.getData()
         #print(eletronicData)
         if(eletronicData != None):

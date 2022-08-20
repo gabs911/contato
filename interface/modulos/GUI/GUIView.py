@@ -1,6 +1,7 @@
 from tkinter import Event, StringVar, Tk
 from tkinter.font import Font
 from tkinter.ttk import Button, Entry, Frame, Label, Spinbox, Style, Widget
+from modulos.GUI.GUIData import GUIButtonState
 
 from modulos.GUI.GUIController import GUIController
 from modulos.GUI.GUIData import GUIData
@@ -155,10 +156,10 @@ class GUIView:
         if (self.data.buttonText.get() == "Tocar"):
             guiInfo = self.getGUIInfo()
             if(guiInfo.getAccelPreset != None) and (guiInfo.getNotePreset() != None):
-                self.data.setButtonState("iniciar")
+                self.data.setButtonState(GUIButtonState.INICIANDO)
                 self.root.after(1, lambda: self.controller.start(self.root, self.getGUIInfo()))
         elif (self.data.buttonText.get() == "Parar"):
-            self.data.setButtonState("parado")
+            self.data.setButtonState(GUIButtonState.PARADO)
             self.controller.end()
     
     def getGUIInfo(self) -> GUIData:

@@ -1,7 +1,10 @@
-
-
+from enum import Enum, auto
 from tkinter import StringVar
 
+class GUIButtonState (Enum):
+    INICIANDO = auto()
+    INICIADO = auto()
+    PARADO = auto()
 
 class GUIData:
     accel = 0
@@ -26,15 +29,17 @@ class GUIData:
             print("Nenhum preset de nota selecionado")
         return self.notePreset
     
-    def setButtonState(self, state: str):
-        match state.lower():
-            case "iniciar":
+    def setButtonState(self, state: GUIButtonState):
+        match state:
+            case GUIButtonState.INICIANDO:
                 self.buttonText.set("Iniciando")
                 self.button.state(["disabled"])
-            case "iniciado":
+            case GUIButtonState.INICIADO:
                 self.buttonText.set("Parar")
                 self.button.state(["!disabled"])
-            case "parado":
+            case GUIButtonState.PARADO:
                 self.buttonText.set("Tocar")
                 self.button.state(["!disabled"])
+
+
 
