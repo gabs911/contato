@@ -6,14 +6,16 @@ from modulos.MidiService import MidiService
 
 
 class App:
-    def __init__(self, message, eletronicModule: BaseEletronicModule, midiService: MidiService):
-        self.message = message
+    def __init__(self, eletronicEnv: str, midiEnv: str, eletronicModule: BaseEletronicModule, midiService: MidiService):
+        self.eletronicEnv = eletronicEnv
+        self.midiEnv = midiEnv
         self.eletronicModule = eletronicModule
         self.midiService = midiService
 
     #o método run vai definir o algoritmo do 
     def run(self):
-        print("Seu ambiente é: " + self.message)
+        print("Seu ambiente para o dispositivo eletronico é: " + self.eletronicEnv)
+        print("Seu ambiente para MIDI é: " + self.midiEnv)
         gui = GUIModule(self.eletronicModule, self.midiService)
         gui.run()
 

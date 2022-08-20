@@ -11,7 +11,21 @@ Para instalar as dependências do projeto, garanta que a versão do pip seja 22.
 
 ### Executando a Aplicação
 
-Para executar aplicação em modo de teste altere a configuração `mode` no [config.json](interface/config.json) para `"teste"`, caso queira testar utilizando o dispositivo eletrônico, rode a configuração no modo `"producao"`.</br>
+Para executar a aplicação, adicione as configurações necessárias ao arquivo [config.json](interface/config.json),
+o arquivo tem o seguinte formato:
+
+```json
+{
+  "ambiente_eletronico": "teste",
+  "ambiente_midi": "teste",
+  "serial_port": "COM4",
+  "midi_port": 1
+}
+```
+
+`ambiente_eletronico` e `ambiente_midi` aceitam os valores `"teste"` ou `"producao"`.  
+Caso deseje apenas simular o comportamento para determinada comunicação, escolha `"teste"` e vão ser criados Mocks para os mesmos. Se deseja executar a aplicação com o dispositivo eletrônico e/ou a porta MIDI, o valor deve ser `"producao"`.
+
 Em seguida, execute o arquivo `main.py` de dentro da pasta `interface`:<br>
 
 ```cli

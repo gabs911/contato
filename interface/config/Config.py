@@ -9,7 +9,7 @@ PRODUCAO_STRING = "producao"
 
 EletronicModuleMap = {
     TESTE_STRING : lambda prop: MockEletronicModule(),
-    PRODUCAO_STRING: lambda prop: EletronicModule(prop["porta"])
+    PRODUCAO_STRING: lambda prop: EletronicModule(prop["serial_port"])
 }
 
 MidiServiceMap = {
@@ -27,5 +27,10 @@ class Config:
             self.properties = json.load(jsonFile)
 
     def createApp(self) -> App:
-        mode = self.properties["mode"]
-        return App(mode, EletronicModuleMap[mode](self.properties), MidiServiceMap[mode](self.properties))
+        eletronicEnv = self.properties["ambiente_eletronico"]
+        midiEnv = self.properties["ambiente_midi"]
+        return App(eletronicEnv,
+            midiEnv,
+            EletronicModuleMap[eletronicEnv](self.properties),
+            MidiServiceMap[eletronicEnv](self.properties)
+        )

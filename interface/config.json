@@ -1,5 +1,6 @@
 {
-    "mode":"teste",
-    "porta": "COM4",
+    "ambiente_eletronico":"teste",
+    "ambiente_midi":"teste",
+    "serial_port": "COM4",
     "midi_port": 1
 }
