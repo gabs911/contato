@@ -8,12 +8,15 @@ from modulos.GUI.GUIData import GUIData
 
 
 class GUIController:
+    INTERVALO_DE_CHECAGEM = 1
+    TOUCH_NOTE_VELOCITY = 100
+
     def __init__(self, eletronicModule: BaseEletronicModule, midiService: MidiService) -> None:
         self.eletronicModule = eletronicModule
         self.scheduler = ""
         self.midiService = midiService
         self.permite_accel = True
-        self.permite_nota = { "A": True, "B": True, "C": True, "D": True, "E": True, "F": True, "G": True }
+        self.permite_nota = None
         self.fileService = FileService()
   
     def getAccelPresets(self) -> list:
@@ -22,9 +25,11 @@ class GUIController:
     def getNotePresets(self) -> list:
         return self.fileService.getNotePresets()
 
-    INTERVALO_DE_CHECAGEM = 1
     def start(self, tk: Tk, GUIData: GUIData):
         self.eletronicModule.setup()
+        self.permite_nota = dict()
+        for nota in self.fileService.getNotasPossiveis():
+            self.permite_nota[nota] = True
         self.GUIData = GUIData
         self.scheduler = tk.after(self.INTERVALO_DE_CHECAGEM, self.process)
         self.tk = tk
@@ -44,7 +49,6 @@ class GUIController:
         # pode aumentar o intervalo para testar com o Mock
         self.scheduler = self.tk.after(self.INTERVALO_DE_CHECAGEM, self.process) # chama a si mesmo depois de um determinado período de tempo
     
-    TOUCH_NOTE_VELOCITY = 100
     def processToque(self, eletronicData):
         TOQUE_NOTE_DURATION = 200 # em milisegundos
         CANAL = 0
@@ -83,10 +87,9 @@ class GUIController:
                 self.permite_accel = True
             self.tk.after(1000, lambda: setPermiteAccelTrue(self))
     
-    CONVERSOR = { "C": 60, "D": 62, "E": 64, "F": 65, "G": 67 }
     def converteNota(self, nota) -> int:
         if(type(nota) is str):
-            return self.CONVERSOR[nota]
+            return self.fileService.getConversorDeNotas()[nota]
         return nota
 
     def send(self, canal: int, nota, velocity: int, on = True):

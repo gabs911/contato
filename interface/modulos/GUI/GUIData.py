@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from tkinter import StringVar
+from tkinter import N, StringVar
 
 class GUIButtonState (Enum):
     INICIANDO = auto()
@@ -7,7 +7,7 @@ class GUIButtonState (Enum):
     PARADO = auto()
 
 class GUIData:
-    accel = 0
+    accel: StringVar = None
     accelPreset = None
     notePreset = None
     buttonText: StringVar = None
@@ -16,8 +16,8 @@ class GUIData:
     def __init__(self) -> None:
         pass
     
-    def getAccel(self):
-        return self.accel
+    def getAccel(self) -> int:
+        return int(self.accel.get())
 
     def getAccelPreset(self):
         if(self.accelPreset == None):

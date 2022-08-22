@@ -103,9 +103,12 @@ class GUIView:
         frame.grid(row=0, column=1, padx=5)
         label = Label(frame, text='Acelerometro')
         label.grid(row=0, column=0)
+        self.data.accel = StringVar(frame, "0")
         #self.accel = StringVar(root, value="2")
-        self.accel = Spinbox(frame, from_=0, to=500000, validate='all', validatecommand=(frame.register(accelValidation), '%P'))
-        self.accel.set(0)
+        self.accel = Spinbox(frame, from_=0, to=500000,
+            validate='all', validatecommand=(frame.register(accelValidation), '%P'),
+            textvariable=self.data.accel
+            )
         self.accel.grid(row=1, column=0)
         self.generateAccelPresetFrame(frame)
 
@@ -163,7 +166,6 @@ class GUIView:
             self.controller.end()
     
     def getGUIInfo(self) -> GUIData:
-        self.data.accel = int(self.accel.get())
         return self.data
 
   
