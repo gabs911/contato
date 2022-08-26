@@ -1,3 +1,4 @@
+from modulos.GUI.PresetFormGUI.PresetFormModule import PresetFormModule
 from modulos.EletronicModule import BaseEletronicModule
 from modulos.GUI.GUIController import GUIController
 from modulos.GUI.GUIView import GUIView
@@ -11,4 +12,4 @@ class GUIModule:
 
     def run(self):
         controller = GUIController(self.eletronicModule, self.midiService)
-        GUIView(controller).show()
+        GUIView(controller, PresetFormModule()).show()

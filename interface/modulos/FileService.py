@@ -41,3 +41,7 @@ class FileService:
             with open(self.MAP_NOTES_LOCATION) as jsonfile:
                 self.notesMapCache = json.load(jsonfile)
         return self.notesMapCache
+    
+    def savePresetDeNotas(self, item, nome: str) -> None:
+        with open(self.NOTE_PRESET_LOCATION + nome + ".json", 'w') as jsonfile:
+            json.dump(item, jsonfile, indent=3)

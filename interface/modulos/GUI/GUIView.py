@@ -1,4 +1,7 @@
-from tkinter import Event, StringVar, Tk
+from modulos.GUI.PresetFormGUI.PresetFormModule import PresetFormModule
+from util.TypeCheck import isInt
+from util.Event import SimpleEvent
+from tkinter import BOTTOM, LEFT, RIGHT, StringVar, Tk
 from tkinter.font import Font
 from tkinter.ttk import Button, Entry, Frame, Label, Spinbox, Style, Widget
 from modulos.GUI.GUIData import GUIButtonState
@@ -11,8 +14,9 @@ class GUIView:
     PRESET_BACKGROUND_FRAME = 'Preset.Background.TFrame'
     DEFAULT_FRAME = 'TFrame'
     
-    def __init__(self, controller: GUIController):
+    def __init__(self, controller: GUIController, presetFormModule: PresetFormModule):
         self.controller = controller
+        self.presetForm = presetFormModule
         self.selected = ''
         self.selectedAccelPreset = ''
         self.FrameToNotePreset = { }
@@ -51,6 +55,10 @@ class GUIView:
         for item in self.controller.getNotePresets():
             self.generateNotePreset(item, frame)
 
+        addButton = Button(frame, padding=[5], text="+",
+                command=lambda: self.generateNoteForm(frame))
+        addButton.pack(anchor='s', side=BOTTOM)
+
     def generateNotePreset(self, item, root):       
         def select(widget: Widget):
             widget.state(['selected'])
@@ -71,10 +79,10 @@ class GUIView:
 
         frame = Frame(root, padding=[5], style=self.DEFAULT_FRAME)
         frame.bind('<Button-1>', (lambda e: mouseFunc(e.widget)))
-        frame.pack()
+        frame.pack(fill='x')
 
         #nome do preset
-        label_nome = Label(frame, text= item['nome'])
+        label_nome = Label(frame, text=item['nome'])
         label_nome.bind('<Button-1>', (lambda e: mouseFunc(e.widget.master)))
         label_nome.grid(row=0, column=0, columnspan=12, sticky='W')
 
@@ -89,16 +97,19 @@ class GUIView:
             #valor final do ângulo da nota
             nota_valor_final = Label(frame, text=nota['proximo_angulo'])
             nota_valor_final.grid(row=2, column=2*i + 2)
+        #adiciona no map para ser encontrável depois
         self.FrameToNotePreset[frame] = item
+        
+
+    def generateNoteForm(self, root: Frame, data = None):
+        self.formEvent = SimpleEvent()
+        self.formEvent.add_listenter(lambda preset: self.generateNotePreset(preset, root))
+        self.formEvent.add_listenter(lambda preset: self.controller.savePresetDeNotas(preset, preset["nome"]))
+        self.formView = self.presetForm.createView(self.root, self.formEvent, data)
+        self.formView.show()
+        
 
     def generateAccelFrame(self, root):
-        def accelValidation(newValue):
-            try:
-                int(newValue)
-                return True
-            except ValueError:
-                return False
-                
         frame = Frame(root)
         frame.grid(row=0, column=1, padx=5)
         label = Label(frame, text='Acelerometro')
@@ -106,7 +117,8 @@ class GUIView:
         self.data.accel = StringVar(frame, "0")
         #self.accel = StringVar(root, value="2")
         self.accel = Spinbox(frame, from_=0, to=500000,
-            validate='all', validatecommand=(frame.register(accelValidation), '%P'),
+            validate='all', validatecommand=(frame.register(isInt), '%P'),
+            increment=100, width=15,
             textvariable=self.data.accel
             )
         self.accel.grid(row=1, column=0)
@@ -138,12 +150,18 @@ class GUIView:
         
         frame = Frame(root, padding=[5], style=self.DEFAULT_FRAME)
         frame.bind('<Button-1>', (lambda e: mouseFunc(e.widget)))
-        frame.pack()
+        frame.pack(fill='x')
 
         #nome do preset
         label_nome = Label(frame, text= item['nome'])
         label_nome.bind('<Button-1>', (lambda e: mouseFunc(e.widget.master)))
-        label_nome.grid(row=0, column=0, columnspan=12, sticky='W')
+        # label_nome.grid(row=0, column=0, sticky='W')
+        label_nome.pack(anchor='nw', side=LEFT)
+
+        label_valor = Label(frame, text=item["nota"], justify='right', padding=[0,20,0,0])
+        label_valor.bind('<Button-1>', (lambda e: mouseFunc(e.widget.master)))
+        # label_valor.grid(row=1, column=1, sticky='E')
+        label_valor.pack(anchor='se', side=RIGHT)
 
         self.FrameToAccelPreset[frame] = item
 

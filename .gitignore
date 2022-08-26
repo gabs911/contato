@@ -1,3 +1,4 @@
 #ignora arquivos de cache do python
 *__pycache__/
 *__pycache__/*
+interface/resources/presets/notas/*

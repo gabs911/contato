@@ -25,6 +25,9 @@ class GUIController:
     def getNotePresets(self) -> list:
         return self.fileService.getNotePresets()
 
+    def savePresetDeNotas(self, item, nome: str) -> None:
+        self.fileService.savePresetDeNotas(item, nome)
+
     def start(self, tk: Tk, GUIData: GUIData):
         self.eletronicModule.setup()
         self.permite_nota = dict()
@@ -39,7 +42,7 @@ class GUIController:
         self.eletronicModule.teardown()
 
     def process(self):
-        '''@private - Função para uso interno do GUIController'''
+        '''@private'''
         self.GUIData.setButtonState(GUIButtonState.INICIADO)
         eletronicData = self.eletronicModule.getData()
         #print(eletronicData)
@@ -50,6 +53,7 @@ class GUIController:
         self.scheduler = self.tk.after(self.INTERVALO_DE_CHECAGEM, self.process) # chama a si mesmo depois de um determinado período de tempo
     
     def processToque(self, eletronicData):
+        '''@private'''
         TOQUE_NOTE_DURATION = 200 # em milisegundos
         CANAL = 0
         nota = self.selecionaNota(self.GUIData, eletronicData)
@@ -63,6 +67,7 @@ class GUIController:
             self.tk.after(10, lambda: setPermiteNotaTrue(self, nota))
     
     def selecionaNota(self, GUIData: GUIData, eletronicData):
+        '''@private'''
         preset = GUIData.getNotePreset()
         giro = eletronicData["giroscopio"]
         if (giro <= preset["angulo_inicial"]):
@@ -73,6 +78,7 @@ class GUIController:
         return None
 
     def processAccel(self, eletronicData):
+        '''@private'''
         ACCEL_PRESET = self.GUIData.getAccelPreset()
         CANAL = ACCEL_PRESET["canal"]
         NOTA = ACCEL_PRESET["nota"]
@@ -88,6 +94,7 @@ class GUIController:
             self.tk.after(1000, lambda: setPermiteAccelTrue(self))
     
     def converteNota(self, nota) -> int:
+        '''@private'''
         if(type(nota) is str):
             return self.fileService.getConversorDeNotas()[nota]
         return nota
