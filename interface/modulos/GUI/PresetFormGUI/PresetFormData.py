@@ -8,6 +8,21 @@ class PresetFormData:
         self.angulo_inicial: StringVar = None
         self.nome: StringVar = None
         self.root = None
+
+    def addNota(self, angulo: StringVar, id: StringVar) -> None:
+        self.notas.append({
+            "id":id,
+            "angulo":angulo
+        })
+    
+    def notaNula(self):
+        return {
+            "id": StringVar(self.root, ""),
+            "angulo": StringVar(self.root, "0")
+        }
+    
+    def deletaNota(self):
+        self.notas.pop()
     
     def converteParaView(self) -> None:
         if self.item_data == None:
@@ -23,12 +38,6 @@ class PresetFormData:
             )
         self.angulo_inicial = StringVar(self.root, self.item_data["angulo_inicial"])
         self.nome = StringVar(self.root, self.item_data["nome"])
-
-    def addNota(self, angulo: StringVar, id: StringVar) -> None:
-        self.notas.append({
-            "id":id,
-            "angulo":angulo
-        })
 
     def converteParaSalvar(self):
         notas = []

@@ -2,7 +2,7 @@ from modulos.GUI.PresetFormGUI.PresetFormData import PresetFormData
 from modulos.GUI.PresetFormGUI.PresetFormController import PresetFormController
 from util.TypeCheck import isInt
 from util.Event import SimpleEvent
-from tkinter import LEFT, RIGHT, StringVar, Tk, Toplevel
+from tkinter import LEFT, RIGHT, TOP, StringVar, Tk, Toplevel
 from tkinter.ttk import Button, Combobox, Entry, Frame, Label, Spinbox
 
 def valida_angulo(valor):
@@ -17,6 +17,7 @@ class PresetFormView:
         self.event = event
         self.controller = controller
         self.data = data
+        self.noteFrames = []
 
     def show(self) -> None:
         self.root = Toplevel(self.tk)
@@ -24,6 +25,11 @@ class PresetFormView:
         self.root.focus_set()
         self.data.root = self.root
         self.data.converteParaView()
+        if self.data.nome.get() == "":
+            self.root.title("Novo Preset de notas")
+        else:
+            self.root.title(f"Editar Preset {self.data.nome.get()}")
+        
         # Nome
         self.nomeLabel = Label(self.root, text="Nome")
         self.nomeLabel.grid(row=0, column=0, sticky='W')
@@ -49,34 +55,58 @@ class PresetFormView:
         self.anguloInicialEntry = Spinbox(root,
             from_= -359, to=360,
             wrap=True, textvariable=self.data.angulo_inicial,
-            validate='all', validatecommand=(self.tk.register(valida_angulo), '%P'),
+            validate='focusout', validatecommand=(self.tk.register(valida_angulo), '%P'),
             width=5
             )
         self.anguloInicialEntry.pack(anchor='sw',side=LEFT)
 
-        ## Adição de novas notas
-        addNoteButton = Button(root, text="+", command=lambda:self.addNoteBoundary(root))
-        addNoteButton.pack(side=RIGHT, anchor='ne')
-        
-    
-    def addNoteBoundary(self, root: Frame):
-        frame = Frame(root)
-        frame.pack(side=LEFT, anchor='w')
+        ## Popula notas
+        for nota in self.data.notas:
+            self.generateNote(root, nota)
 
-        id = StringVar(frame, "")
-        combobox = Combobox(frame, textvariable=id, values=self.controller.getNotasPossiveis(), width=2)
+        buttonFrame = Frame(root, padding=[0,10,0,0])
+        buttonFrame.pack(side=RIGHT, anchor='e')
+
+        ## Adição de novas notas
+        addNoteButton = Button(buttonFrame, text="+", command=lambda:self.generateNewNote(root))
+        addNoteButton.pack(side=TOP, anchor='e', expand=1)    
+
+        ## Remoção de notas
+        deleteNoteButton = Button(buttonFrame, text='-', command=self.deleteNote)
+        deleteNoteButton.pack(side=TOP, anchor='e', expand=1)
+        
+    def generateNewNote(self, root: Frame):
+        nota = self.data.notaNula()
+        self.generateNote(root, nota)
+        self.data.addNota(nota["angulo"], nota["id"])
+    
+    def generateNote(self, root: Frame, nota):
+        '''
+        param 3 nota: nota no formato {"id", "angulo"}
+        '''
+        frame = Frame(root, padding=[0,20, 0, 0])
+        frame.pack(side=LEFT, anchor='w')
+        self.noteFrames.append(frame)
+
+        combobox = Combobox(frame, textvariable=nota["id"],
+            width=2,
+            values=self.controller.getNotasPossiveis(), validate='all',
+            validatecommand=(self.tk.register(lambda v: v in self.controller.getNotasPossiveis() + [""]), '%P'))
         combobox.grid(row=0, column=0)
 
-        angulo = StringVar(frame, "0")
         spinbox = Spinbox(frame,
             from_= -359, to=360,
-            wrap=True, textvariable=angulo,
+            wrap=True, textvariable=nota["angulo"],
             validate='all', validatecommand=(self.tk.register(valida_angulo), '%P'),
             width=5
             )
         spinbox.grid(row=1, column=1)
+
+    def deleteNote(self):
+        self.data.deletaNota()
+        frame:Frame = self.noteFrames.pop()
+        frame.destroy()
         
-        self.data.addNota(angulo, id)
 
     def save(self):
         self.event.invoke(self.data.converteParaSalvar())

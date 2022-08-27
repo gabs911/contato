@@ -1,3 +1,4 @@
+from modulos.GUI.PresetFormGUI.PresetFormData import PresetFormData
 from modulos.GUI.PresetFormGUI.PresetFormModule import PresetFormModule
 from util.TypeCheck import isInt
 from util.Event import SimpleEvent
@@ -99,6 +100,9 @@ class GUIView:
             nota_valor_final.grid(row=2, column=2*i + 2)
         #adiciona no map para ser encontrável depois
         self.FrameToNotePreset[frame] = item
+        #adiciona botão de editar
+        edit_button = Button(frame, text="Editar", command=lambda: self.generateNoteForm(root, PresetFormData(item)), width=6)
+        edit_button.grid(row=1, column=2*len(item["notas"]) + 3)
         
 
     def generateNoteForm(self, root: Frame, data = None):
