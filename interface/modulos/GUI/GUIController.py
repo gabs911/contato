@@ -1,4 +1,5 @@
 import json
+from serial import SerialException
 from tkinter import Tk
 from modulos.GUI.GUIData import GUIButtonState
 from modulos.EletronicModule import BaseEletronicModule
@@ -29,13 +30,18 @@ class GUIController:
         self.fileService.savePresetDeNotas(item, nome)
 
     def start(self, tk: Tk, GUIData: GUIData):
-        self.eletronicModule.setup()
         self.permite_nota = dict()
         for nota in self.fileService.getNotasPossiveis():
             self.permite_nota[nota] = True
         self.GUIData = GUIData
         self.scheduler = tk.after(self.INTERVALO_DE_CHECAGEM, self.process)
         self.tk = tk
+        try:
+            self.eletronicModule.setup()
+        except SerialException:
+            self.GUIData.setButtonState(GUIButtonState.PARADO)
+            self.end()
+            raise
     
     def end(self):
         self.tk.after_cancel(self.scheduler)
@@ -45,7 +51,6 @@ class GUIController:
         '''@private'''
         self.GUIData.setButtonState(GUIButtonState.INICIADO)
         eletronicData = self.eletronicModule.getData()
-        #print(eletronicData)
         if(eletronicData != None):
             self.processToque(eletronicData)
             self.processAccel(eletronicData)
@@ -64,7 +69,7 @@ class GUIController:
 
             def setPermiteNotaTrue(self: GUIController, nota):
                 self.permite_nota[nota] = True
-            self.tk.after(10, lambda: setPermiteNotaTrue(self, nota))
+            self.tk.after(TOQUE_NOTE_DURATION, lambda: setPermiteNotaTrue(self, nota))
     
     def selecionaNota(self, GUIData: GUIData, eletronicData):
         '''@private'''
@@ -86,6 +91,7 @@ class GUIController:
         ACCEL_NOTE_DURATION = 200 # em milisegundos
         if(eletronicData["acelerometro"] >= self.GUIData.getAccel()) and self.permite_accel:
             self.send(CANAL, NOTA, ACCEL_NOTE_VELOCITY)
+            print(f"GUI: {self.GUIData.getAccel()}\nDisp: {eletronicData['acelerometro']}")
             self.tk.after(ACCEL_NOTE_DURATION, lambda: self.send(CANAL, NOTA, ACCEL_NOTE_VELOCITY, False))
             self.permite_accel = False
 

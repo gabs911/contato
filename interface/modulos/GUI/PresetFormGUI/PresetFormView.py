@@ -107,7 +107,6 @@ class PresetFormView:
         frame:Frame = self.noteFrames.pop()
         frame.destroy()
         
-
     def save(self):
         self.event.invoke(self.data.converteParaSalvar())
         self.root.destroy()

@@ -4,8 +4,7 @@ class MidiService:
     def __init__(self, port) -> None:
         self.midiout = MidiOut()
         print(self.midiout.get_ports())
-        self.port = self.midiout.open_port(port)
-        pass
+        self.port = self.midiout.open_port(int(port))
     
     CONVERSOR_HEXADECIMAL = {
         (0, False): 0x80,

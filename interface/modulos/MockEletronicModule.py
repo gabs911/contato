@@ -13,7 +13,7 @@ class MockEletronicModule(BaseEletronicModule):
         sleep(2)
 
     def getData(self):
-        giro = -1
+        giro = 360
         accel = 0
         if(self.data_index < len(self.data_list)):
             giro = self.data_list[self.data_index][0]

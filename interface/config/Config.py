@@ -32,5 +32,5 @@ class Config:
         return App(eletronicEnv,
             midiEnv,
             EletronicModuleMap[eletronicEnv](self.properties),
-            MidiServiceMap[eletronicEnv](self.properties)
+            MidiServiceMap[midiEnv](self.properties)
         )

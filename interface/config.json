@@ -1,6 +1,6 @@
 {
-    "ambiente_eletronico":"teste",
-    "ambiente_midi":"teste",
-    "serial_port": "COM4",
-    "midi_port": 1
+    "ambiente_eletronico":"producao",
+    "ambiente_midi":"producao",
+    "serial_port": "COM3",
+    "midi_port": 0
 }
