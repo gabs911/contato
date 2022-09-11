@@ -62,7 +62,7 @@ class GUIView:
             self.generateNotePreset(item, frame)
 
         addButton = Button(frame, padding=[5], text="+",
-                command=lambda: self.generateNoteForm(frame))
+                command=lambda: self.generateCreateNoteForm(frame))
         addButton.pack(anchor='s', side=BOTTOM)
 
     def generateNotePreset(self, item, root):       
@@ -117,7 +117,7 @@ class GUIView:
         buttonFrame.pack(anchor='e', side=RIGHT)
         
         #adiciona botão de editar
-        edit_button = Button(buttonFrame, text="Editar", command=lambda: self.generateNoteForm(root, PresetFormData(item)), width=6)
+        edit_button = Button(buttonFrame, text="Editar", command=lambda: self.generateEditNoteForm(root, noteFrame), width=6)
         edit_button.grid(row=0, column=0)
 
         #adiciona botão de deletar
@@ -125,8 +125,18 @@ class GUIView:
         delete_button.grid(row=0, column=1)
         
 
-    def generateNoteForm(self, root: Frame, data = None):
+    def generateCreateNoteForm(self, root: Frame, data = None):
         self.formEvent = SimpleEvent()
+        self.formEvent.add_listenter(lambda preset: self.generateNotePreset(preset, root))
+        self.formEvent.add_listenter(lambda preset: self.controller.savePresetDeNotas(preset, preset["nome"]))
+        self.formView = self.presetForm.createView(self.root, self.formEvent, data)
+        self.formView.show()
+    
+    def generateEditNoteForm(self, root: Frame, noteFrame: Frame):
+        item = self.FrameToNotePreset[noteFrame]
+        data = PresetFormData(item)
+        self.formEvent = SimpleEvent()
+        self.formEvent.add_listenter(lambda _: self.deleteNote(item, noteFrame))
         self.formEvent.add_listenter(lambda preset: self.generateNotePreset(preset, root))
         self.formEvent.add_listenter(lambda preset: self.controller.savePresetDeNotas(preset, preset["nome"]))
         self.formView = self.presetForm.createView(self.root, self.formEvent, data)
@@ -136,14 +146,19 @@ class GUIView:
         item = self.FrameToNotePreset[noteFrame]
         confirmacao = messagebox.askokcancel(
             title="Confimação de deleção",
-            message=f"Deseja deletar o preset \"{item['nome']}\"?",
+            message=f"Tem certeza que deseja deletar o preset \"{item['nome']}\"?",
             icon=messagebox.WARNING
             )
         if confirmacao:
-            print(item)
-            self.controller.fileService.deleteNota(item["nome"])
-            noteFrame.master.pack_forget()
-            noteFrame.master.destroy()
+            self.deleteNote(item, noteFrame)
+    
+    def deleteNote(self, item, noteFrame: Frame) -> None:
+        print(item)
+        self.FrameToNotePreset.pop(noteFrame)
+        self.controller.fileService.deleteNota(item["nome"])
+        noteFrame.master.pack_forget()
+        noteFrame.master.destroy()
+
 
 
     def generateAccelFrame(self, root):
