@@ -159,8 +159,6 @@ class GUIView:
         noteFrame.master.pack_forget()
         noteFrame.master.destroy()
 
-
-
     def generateAccelFrame(self, root):
         frame = Frame(root)
         frame.grid(row=0, column=1, padx=5)

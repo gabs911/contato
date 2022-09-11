@@ -1,4 +1,10 @@
 #ignora arquivos de cache do python
 *__pycache__/
 *__pycache__/*
+# ignora os presets de notas geradas pelo programa
 interface/resources/presets/notas/*
+# ignora os resultados do build
+interface/output/*
+output/*
+# ignora arquivos gerados pela abertura de imagens no Windows
+*Thumbs.db
