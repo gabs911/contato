@@ -2,7 +2,7 @@ from modulos.GUI.PresetFormGUI.PresetFormData import PresetFormData
 from modulos.GUI.PresetFormGUI.PresetFormModule import PresetFormModule
 from util.TypeCheck import isInt
 from util.Event import SimpleEvent
-from tkinter import BOTTOM, LEFT, RIGHT, StringVar, Tk
+from tkinter import BOTTOM, LEFT, RIGHT, PhotoImage, StringVar, Tk, messagebox
 from tkinter.font import Font
 from tkinter.ttk import Button, Entry, Frame, Label, Spinbox, Style, Widget
 from modulos.GUI.GUIData import GUIButtonState
@@ -14,6 +14,7 @@ class GUIView:
     BACKGROUND_FRAME = 'Background.TFrame'
     PRESET_BACKGROUND_FRAME = 'Preset.Background.TFrame'
     DEFAULT_FRAME = 'TFrame'
+    DELETE_BUTTON = 'Delete.TButton'
     
     def __init__(self, controller: GUIController, presetFormModule: PresetFormModule):
         self.controller = controller
@@ -23,10 +24,12 @@ class GUIView:
         self.FrameToNotePreset = { }
         self.FrameToAccelPreset = { }
         self.data = GUIData()
+        
     
     def show(self):
         self.root = Tk()
         self.root.title('Gruppen - Contato')
+        self.root.geometry("")
         self.generateStyles()
 
         rootFrame = Frame(self.root , padding=[10], style=self.BACKGROUND_FRAME)
@@ -49,8 +52,10 @@ class GUIView:
             background=[('selected', 'yellow')], 
             foreground=[('selected', 'black')]
         )
+        self.delete_image = PhotoImage(file="resources/imagens/trash.png")
 
     def generateNoteFrame(self, root):
+
         frame = Frame(root, padding=[5], style=self.PRESET_BACKGROUND_FRAME)
         frame.grid(row=0, column=0)
         for item in self.controller.getNotePresets():
@@ -79,30 +84,45 @@ class GUIView:
             select(widget)
 
         frame = Frame(root, padding=[5], style=self.DEFAULT_FRAME)
-        frame.bind('<Button-1>', (lambda e: mouseFunc(e.widget)))
         frame.pack(fill='x')
 
+        #frame para o preset da nota
+        noteFrame = Frame(frame, style=self.DEFAULT_FRAME)
+        noteFrame.bind('<Button-1>', (lambda e: mouseFunc(e.widget)))
+        noteFrame.pack(fill='x', expand=True, anchor='w', side=LEFT)
+        
         #nome do preset
-        label_nome = Label(frame, text=item['nome'])
+        label_nome = Label(noteFrame, text=item['nome'])
         label_nome.bind('<Button-1>', (lambda e: mouseFunc(e.widget.master)))
         label_nome.grid(row=0, column=0, columnspan=12, sticky='W')
 
         #valor do ângulo de inicio
-        label_inicio = Label(frame, text=str(item['angulo_inicial']))
+        label_inicio = Label(noteFrame, text=str(item['angulo_inicial']))
         label_inicio.grid(row=2, column=0)
         for zipper in zip(item['notas'], range(len(item['notas']))):
             nota, i = zipper
             #nome da nota
-            nota_nome = Label(frame, text=nota["id"])
+            nota_nome = Label(noteFrame, text=nota["id"])
             nota_nome.grid(row=1, column=2*i + 1)
             #valor final do ângulo da nota
-            nota_valor_final = Label(frame, text=nota['proximo_angulo'])
+            nota_valor_final = Label(noteFrame, text=nota['proximo_angulo'])
             nota_valor_final.grid(row=2, column=2*i + 2)
         #adiciona no map para ser encontrável depois
-        self.FrameToNotePreset[frame] = item
+        self.FrameToNotePreset[noteFrame] = item
+
+        self.generateNoteFrameButtons(frame, noteFrame, root, item)
+
+    def generateNoteFrameButtons(self, frame, noteFrame, root, item) -> None:
+        buttonFrame = Frame(frame, style=self.DEFAULT_FRAME)
+        buttonFrame.pack(anchor='e', side=RIGHT)
+        
         #adiciona botão de editar
-        edit_button = Button(frame, text="Editar", command=lambda: self.generateNoteForm(root, PresetFormData(item)), width=6)
-        edit_button.grid(row=1, column=2*len(item["notas"]) + 3)
+        edit_button = Button(buttonFrame, text="Editar", command=lambda: self.generateNoteForm(root, PresetFormData(item)), width=6)
+        edit_button.grid(row=0, column=0)
+
+        #adiciona botão de deletar
+        delete_button = Button(buttonFrame, image=self.delete_image, command=lambda: self.deleteNoteForm(noteFrame))
+        delete_button.grid(row=0, column=1)
         
 
     def generateNoteForm(self, root: Frame, data = None):
@@ -112,6 +132,19 @@ class GUIView:
         self.formView = self.presetForm.createView(self.root, self.formEvent, data)
         self.formView.show()
         
+    def deleteNoteForm(self, noteFrame: Frame) -> None:
+        item = self.FrameToNotePreset[noteFrame]
+        confirmacao = messagebox.askokcancel(
+            title="Confimação de deleção",
+            message=f"Deseja deletar o preset \"{item['nome']}\"?",
+            icon=messagebox.WARNING
+            )
+        if confirmacao:
+            print(item)
+            self.controller.fileService.deleteNota(item["nome"])
+            noteFrame.master.pack_forget()
+            noteFrame.master.destroy()
+
 
     def generateAccelFrame(self, root):
         frame = Frame(root)

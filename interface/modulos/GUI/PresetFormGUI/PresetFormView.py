@@ -21,7 +21,7 @@ class PresetFormView:
 
     def show(self) -> None:
         self.root = Toplevel(self.tk)
-        self.root.geometry("600x200")
+        self.root.geometry("")
         self.root.focus_set()
         self.data.root = self.root
         self.data.converteParaView()

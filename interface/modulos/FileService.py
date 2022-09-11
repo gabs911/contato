@@ -1,6 +1,6 @@
 import json
 from lib2to3.pgen2.grammar import opmap
-from os import listdir
+from os import listdir, path, remove
 
 
 class FileService:
@@ -45,3 +45,10 @@ class FileService:
     def savePresetDeNotas(self, item, nome: str) -> None:
         with open(self.NOTE_PRESET_LOCATION + nome + ".json", 'w') as jsonfile:
             json.dump(item, jsonfile, indent=3)
+    
+    def deleteNota(self, nome: str) -> None:
+        notePath = self.NOTE_PRESET_LOCATION + nome + ".json"
+        if path.exists(notePath):
+            remove(notePath)
+        else:
+            print("Arquivo não existe")
