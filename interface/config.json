@@ -1,6 +1,4 @@
 {
     "ambiente_eletronico":"producao",
-    "ambiente_midi":"producao",
-    "serial_port": "COM3",
-    "midi_port": 0
+    "ambiente_midi":"producao"
 }

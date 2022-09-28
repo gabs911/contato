@@ -4,7 +4,7 @@ from util.TypeCheck import isInt
 from util.Event import SimpleEvent
 from tkinter import BOTTOM, LEFT, RIGHT, PhotoImage, StringVar, Tk, messagebox
 from tkinter.font import Font
-from tkinter.ttk import Button, Entry, Frame, Label, Spinbox, Style, Widget
+from tkinter.ttk import Button, Combobox, Entry, Frame, Label, Spinbox, Style, Widget
 from modulos.GUI.GUIData import GUIButtonState
 
 from modulos.GUI.GUIController import GUIController
@@ -37,6 +37,7 @@ class GUIView:
 
         self.generateNoteFrame(rootFrame)
         self.generateAccelFrame(rootFrame)
+        self.generateConnector(rootFrame)
         self.generateButtons(rootFrame)
 
         self.root.mainloop()
@@ -215,9 +216,46 @@ class GUIView:
 
         self.FrameToAccelPreset[frame] = item
 
+    def generateConnector(self, root):
+        frame = Frame(root)
+        frame.grid(row=0, column=2)
+
+        #Bluetooth
+        label = Label(frame, text="Porta Bluetooth")
+        label.grid(row=0, column=0, columnspan=2, sticky="w")
+
+        self.data.COMText = StringVar(root, "")
+        combobox = Combobox(frame, textvariable=self.data.COMText,
+            values=self.controller.listCOMPorts(),
+            width=16
+            )
+        combobox.grid(row=1,column=0)
+        refreshButton = Button(frame, text="R",
+            width=2,
+            command=lambda: combobox.config(values=self.controller.listCOMPorts())
+            )
+        refreshButton.grid(row=1, column=1)
+
+        #MIDI
+        label = Label(frame, text="Porta MIDI")
+        label.grid(row=2, column=0, sticky="w")
+        self.data.MIDIText = StringVar(root, "")
+
+        MIDIcombobox = Combobox(frame, textvariable=self.data.MIDIText,
+            values=self.controller.listMIDIPorts(),
+            width=16
+            )
+        MIDIcombobox.grid(row=3,column=0)
+        MIDIrefreshButton = Button(frame, text="R",
+            width=2,
+            command=lambda: MIDIcombobox.config(values=self.controller.listMIDIPorts())
+            )
+        MIDIrefreshButton.grid(row=3, column=1)
+
+    
     def generateButtons(self, root):
         frame = Frame(root)
-        frame.grid(row=0, column=2, sticky='S')
+        frame.grid(row=1, column=2, sticky='SE')
         self.data.buttonText = StringVar(root, value="Tocar")
         self.button = Button(frame, textvariable=self.data.buttonText, command=self.toggleTocar)
         self.data.button = self.button

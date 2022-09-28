@@ -8,9 +8,13 @@ class MockEletronicModule(BaseEletronicModule):
          (-1, 0), (-1, 0), (-1, 1), (49, 0), (100, 0), (90, 0)]
         self.data_index = 0
 
-    def setup(self):
-        super().setup()
+    def setup(self, porta):
+        super().setup(porta)
         sleep(2)
+        print(porta)
+
+    def listCOMPorts(self):
+        return ["COM3", "COM5", "COM7"]
 
     def getData(self):
         giro = 360

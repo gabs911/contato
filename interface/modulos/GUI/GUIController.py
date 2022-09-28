@@ -29,6 +29,12 @@ class GUIController:
     def savePresetDeNotas(self, item, nome: str) -> None:
         self.fileService.savePresetDeNotas(item, nome)
 
+    def listCOMPorts(self):
+        return self.eletronicModule.listCOMPorts()
+
+    def listMIDIPorts(self):
+        return self.midiService.listMIDIPorts()
+
     def start(self, tk: Tk, GUIData: GUIData):
         self.permite_nota = dict()
         for nota in self.fileService.getNotasPossiveis():
@@ -37,7 +43,8 @@ class GUIController:
         self.scheduler = tk.after(self.INTERVALO_DE_CHECAGEM, self.process)
         self.tk = tk
         try:
-            self.eletronicModule.setup()
+            self.midiService.setup(int(self.GUIData.MIDIText.get().split(" ")[-1]))
+            self.eletronicModule.setup(self.GUIData.COMText.get())
         except SerialException:
             self.GUIData.setButtonState(GUIButtonState.PARADO)
             self.end()
@@ -46,6 +53,7 @@ class GUIController:
     def end(self):
         self.tk.after_cancel(self.scheduler)
         self.eletronicModule.teardown()
+        self.midiService.teardown()
 
     def process(self):
         '''@private'''

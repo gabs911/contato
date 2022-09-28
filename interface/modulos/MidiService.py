@@ -1,10 +1,9 @@
 from rtmidi import MidiOut
 
 class MidiService:
-    def __init__(self, port) -> None:
+    def __init__(self) -> None:
         self.midiout = MidiOut()
         print(self.midiout.get_ports())
-        self.port = self.midiout.open_port(int(port))
     
     CONVERSOR_HEXADECIMAL = {
         (0, False): 0x80,
@@ -12,6 +11,15 @@ class MidiService:
         (1, False): 0x81,
         (1, True): 0x91
         }
+
+    def listMIDIPorts(self):
+        return self.midiout.get_ports()
+    
+    def setup(self, port):
+        self.port = self.midiout.open_port(int(port))
+    
+    def teardown(self):
+        self.midiout.close_port()
 
     def send(self, canal, on, note, velocity):
         self.midiout.send_message([self.CONVERSOR_HEXADECIMAL[(canal, on)], note, velocity])

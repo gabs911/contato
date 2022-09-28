@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from tkinter import N, StringVar
+from tkinter import StringVar
 
 class GUIButtonState (Enum):
     INICIANDO = auto()
@@ -12,6 +12,8 @@ class GUIData:
     notePreset = None
     buttonText: StringVar = None
     button = None
+    COMText: StringVar = None
+    MIDIText: StringVar = None
     
     def __init__(self) -> None:
         pass

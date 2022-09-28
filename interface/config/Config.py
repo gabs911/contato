@@ -9,12 +9,12 @@ PRODUCAO_STRING = "producao"
 
 EletronicModuleMap = {
     TESTE_STRING : lambda prop: MockEletronicModule(),
-    PRODUCAO_STRING: lambda prop: EletronicModule(prop["serial_port"])
+    PRODUCAO_STRING: lambda prop: EletronicModule()
 }
 
 MidiServiceMap = {
     TESTE_STRING: lambda prop: MockMidiService(),
-    PRODUCAO_STRING: lambda prop: MidiService(prop["midi_port"])
+    PRODUCAO_STRING: lambda prop: MidiService()
 }
 
 class Config:

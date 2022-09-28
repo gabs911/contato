@@ -1,10 +1,11 @@
 from typing import Any
 from serial import Serial, STOPBITS_ONE
+from serial.tools.list_ports import comports
 
 class BaseEletronicModule:
     '''Uma 'interface' que vai definir os métodos em comum no Mock e no real e prover a documentação das funções'''
         
-    def setup(self):
+    def setup(self, porta):
         '''faz o setup do que vai ser necessário no programa'''
         
     def getData(self) -> Any:
@@ -12,19 +13,25 @@ class BaseEletronicModule:
         busca dados da identificação do dispositivo eletrônico, giroscópio, acelerometro e toque
         :return: os dados na forma de um json {"id", "giroscopio", "acelerometro", "toque"}
         '''
+    def listCOMPorts(self):
+        pass
 
     def teardown(self):
         pass
 
 #implementacao da parte que vai interagir com as partes eletronicas
 class EletronicModule(BaseEletronicModule):
-    def __init__(self, porta) -> None:
-        self.porta = porta
+    def __init__(self) -> None:
+        pass
 
+    def listCOMPorts(self):
+        super().listCOMPorts()
+        print("recuperou lista")
+        return list(map(lambda port: port.name , comports()))
 
-    def setup(self):
-        super().setup()
-        self.serialPort = Serial(port = self.porta, baudrate=115200, bytesize=8, timeout=2, stopbits=STOPBITS_ONE)
+    def setup(self, porta):
+        super().setup(porta)
+        self.serialPort = Serial(port = porta, baudrate=115200, bytesize=8, timeout=2, stopbits=STOPBITS_ONE)
 
     def getData(self) -> Any:
         super().getData()
