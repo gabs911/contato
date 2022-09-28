@@ -45,11 +45,38 @@ class GUIController:
         try:
             self.midiService.setup(int(self.GUIData.MIDIText.get().split(" ")[-1]))
             self.eletronicModule.setup(self.GUIData.COMText.get())
+            self.GUIData.setButtonState(GUIButtonState.INICIADO)
         except SerialException:
             self.GUIData.setButtonState(GUIButtonState.PARADO)
             self.end()
             raise
     
+    def startCalibrar(self, tk: Tk, GUIData: GUIData):
+        self.GUIData = GUIData
+        self.scheduler = tk.after(self.INTERVALO_DE_CHECAGEM, self.processCalibrar)
+        self.tk = tk
+        self.maiorAccel = 0
+        try:
+            self.eletronicModule.setup(self.GUIData.COMText.get())
+            self.GUIData.setCalibrarState(GUIButtonState.INICIADO)
+        except SerialException:
+            self.GUIData.setButtonState(GUIButtonState.PARADO)
+            self.endCalibrar()
+            raise
+    
+    def endCalibrar(self):
+        self.tk.after_cancel(self.scheduler)
+        self.eletronicModule.teardown()
+        self.GUIData.accel.set(self.maiorAccel)
+        self.maiorAccel = 0
+        print("Teste")
+
+    def processCalibrar(self):
+        data = self.eletronicModule.getData()
+        if (data != None):
+            self.maiorAccel = max(self.maiorAccel, data["acelerometro"])
+        self.scheduler = self.tk.after(self.INTERVALO_DE_CHECAGEM, self.processCalibrar)
+
     def end(self):
         self.tk.after_cancel(self.scheduler)
         self.eletronicModule.teardown()
@@ -57,7 +84,6 @@ class GUIController:
 
     def process(self):
         '''@private'''
-        self.GUIData.setButtonState(GUIButtonState.INICIADO)
         eletronicData = self.eletronicModule.getData()
         if(eletronicData != None):
             self.processToque(eletronicData)

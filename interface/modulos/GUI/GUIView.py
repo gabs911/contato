@@ -256,10 +256,18 @@ class GUIView:
     def generateButtons(self, root):
         frame = Frame(root)
         frame.grid(row=1, column=2, sticky='SE')
+
+        #Tocar
         self.data.buttonText = StringVar(root, value="Tocar")
         self.button = Button(frame, textvariable=self.data.buttonText, command=self.toggleTocar)
         self.data.button = self.button
-        self.button.grid(row=0, column=0)
+        self.button.grid(row=0, column=1)
+
+        #Calibrar
+        self.data.calibrarButtonText = StringVar(root, value="Calibrar")
+        self.calibrarButton = Button(frame, textvariable=self.data.calibrarButtonText, command=self.toggleCalibrar)
+        self.data.calibrarButton = self.calibrarButton
+        self.calibrarButton.grid(row=0, column=0)
 
     def toggleTocar(self):
         if (self.data.buttonText.get() == "Tocar"):
@@ -270,6 +278,15 @@ class GUIView:
         elif (self.data.buttonText.get() == "Parar"):
             self.data.setButtonState(GUIButtonState.PARADO)
             self.controller.end()
+    
+    def toggleCalibrar(self):
+        if (self.data.calibrarButtonText.get() == "Calibrar"):
+            self.data.setCalibrarState(GUIButtonState.INICIANDO)
+            self.root.after(1, lambda: self.controller.startCalibrar(self.root, self.getGUIInfo()))
+        
+        elif (self.data.calibrarButtonText.get() == "Parar"):
+            self.data.setCalibrarState(GUIButtonState.PARADO)
+            self.controller.endCalibrar()
     
     def getGUIInfo(self) -> GUIData:
         return self.data

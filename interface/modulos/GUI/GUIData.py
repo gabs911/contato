@@ -12,6 +12,8 @@ class GUIData:
     notePreset = None
     buttonText: StringVar = None
     button = None
+    calibrarButtonText: StringVar = None
+    calibrarButton = None
     COMText: StringVar = None
     MIDIText: StringVar = None
     
@@ -42,6 +44,18 @@ class GUIData:
             case GUIButtonState.PARADO:
                 self.buttonText.set("Tocar")
                 self.button.state(["!disabled"])
+    
+    def setCalibrarState(self, state: GUIButtonState):
+        match state:
+            case GUIButtonState.INICIANDO:
+                self.calibrarButtonText.set("Iniciando")
+                self.calibrarButton.state(["disabled"])
+            case GUIButtonState.INICIADO:
+                self.calibrarButtonText.set("Parar")
+                self.calibrarButton.state(["!disabled"])
+            case GUIButtonState.PARADO:
+                self.calibrarButtonText.set("Calibrar")
+                self.calibrarButton.state(["!disabled"])
 
 
 

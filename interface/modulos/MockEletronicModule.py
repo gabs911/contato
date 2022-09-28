@@ -4,8 +4,8 @@ from modulos.EletronicModule import BaseEletronicModule
 class MockEletronicModule(BaseEletronicModule):
     def __init__(self) -> None:
         super().__init__()
-        self.data_list = [(15, 0), (-1, 0), (-1, 0), (-1, 1), (28, 0), (12, 0), (50,0), (-1, 0),
-         (-1, 0), (-1, 0), (-1, 1), (49, 0), (100, 0), (90, 0)]
+        self.data_list = [(15, 0), (-1, 10), (-1, 0), (-1, 1), (28, 0), (12, 0), (50,0), (-1, 0),
+         (-1, 0), (-1, 0), (-1, 1), (49, 0), (100, 20), (90, 0)]
         self.data_index = 0
 
     def setup(self, porta):
@@ -14,7 +14,7 @@ class MockEletronicModule(BaseEletronicModule):
         print(porta)
 
     def listCOMPorts(self):
-        return ["COM3", "COM5", "COM7"]
+        return ["COM3 (Mock)", "COM5 (Mock)", "COM7 (Mock)"]
 
     def getData(self):
         giro = 360
