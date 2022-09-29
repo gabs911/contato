@@ -89,7 +89,7 @@ class PresetFormView:
         self.noteFrames.append(frame)
 
         combobox = Combobox(frame, textvariable=nota["id"],
-            width=2,
+            width=4, height=5,
             values=self.controller.getNotasPossiveis(), validate='all',
             validatecommand=(self.tk.register(lambda v: v in self.controller.getNotasPossiveis() + [""]), '%P'))
         combobox.grid(row=0, column=0)

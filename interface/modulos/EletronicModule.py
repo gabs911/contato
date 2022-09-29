@@ -39,12 +39,14 @@ class EletronicModule(BaseEletronicModule):
             serialString = self.serialPort.readline()
             sensorData = (serialString.decode('utf-8').split('/'))
 
-            return {
+            data = {
                 "id": sensorData[0],
                 "giroscopio": float(sensorData[1]),
                 "acelerometro": float(sensorData[2]),
                 "toque": int(sensorData[3])
             }
+            print(data)
+            return data
     
     def teardown(self):
         self.serialPort.close()

@@ -17,8 +17,8 @@ class GUIController:
         self.scheduler = ""
         self.midiService = midiService
         self.permite_accel = True
-        self.permite_nota = None
         self.fileService = FileService()
+        self.ultimaNota = ""
   
     def getAccelPresets(self) -> list:
         return self.fileService.getAccelPresets()
@@ -36,9 +36,6 @@ class GUIController:
         return self.midiService.listMIDIPorts()
 
     def start(self, tk: Tk, GUIData: GUIData):
-        self.permite_nota = dict()
-        for nota in self.fileService.getNotasPossiveis():
-            self.permite_nota[nota] = True
         self.GUIData = GUIData
         self.scheduler = tk.after(self.INTERVALO_DE_CHECAGEM, self.process)
         self.tk = tk
@@ -46,6 +43,7 @@ class GUIController:
             self.midiService.setup(int(self.GUIData.MIDIText.get().split(" ")[-1]))
             self.eletronicModule.setup(self.GUIData.COMText.get())
             self.GUIData.setButtonState(GUIButtonState.INICIADO)
+            print("Start")
         except SerialException:
             self.GUIData.setButtonState(GUIButtonState.PARADO)
             self.end()
@@ -96,14 +94,12 @@ class GUIController:
         TOQUE_NOTE_DURATION = 200 # em milisegundos
         CANAL = 0
         nota = self.selecionaNota(self.GUIData, eletronicData)
-        if(nota is not None) and (eletronicData["toque"] < 30) and self.permite_nota[nota]:
+        if(eletronicData["toque"] >= 30):
+            self.ultimaNota = ""
+        if(nota is not None) and (eletronicData["toque"] < 30) and self.ultimaNota != nota:
+            self.ultimaNota = nota
             self.send(CANAL, nota, self.TOUCH_NOTE_VELOCITY)
             self.tk.after(TOQUE_NOTE_DURATION, lambda: self.send(CANAL, nota, self.TOUCH_NOTE_VELOCITY, False))
-            self.permite_nota[nota] = False
-
-            def setPermiteNotaTrue(self: GUIController, nota):
-                self.permite_nota[nota] = True
-            self.tk.after(TOQUE_NOTE_DURATION, lambda: setPermiteNotaTrue(self, nota))
     
     def selecionaNota(self, GUIData: GUIData, eletronicData):
         '''@private'''

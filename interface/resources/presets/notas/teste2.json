@@ -1,26 +1,26 @@
 {
-    "nome": "teste2",
-    "angulo_inicial": -60,
-    "notas": [
-        {
-            "id": "C",
-            "proximo_angulo": -30
-        },
-        {
-            "id": "D",
-            "proximo_angulo": 0
-        },
-        {
-            "id": "E",
-            "proximo_angulo": 30
-        },
-        {
-            "id": "F",
-            "proximo_angulo": 60
-        },
-        {
-            "id": "G",
-            "proximo_angulo": 90
-        }
-    ]
+   "nome": "teste2",
+   "angulo_inicial": -60,
+   "notas": [
+      {
+         "id": "C5",
+         "proximo_angulo": -30
+      },
+      {
+         "id": "D5",
+         "proximo_angulo": 0
+      },
+      {
+         "id": "E5",
+         "proximo_angulo": 30
+      },
+      {
+         "id": "F5",
+         "proximo_angulo": 60
+      },
+      {
+         "id": "G5",
+         "proximo_angulo": 90
+      }
+   ]
 }
