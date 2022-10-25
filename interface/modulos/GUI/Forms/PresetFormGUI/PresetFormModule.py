@@ -1,8 +1,8 @@
 from tkinter import Tk
 from modulos.FileService import FileService
-from modulos.GUI.PresetFormGUI.PresetFormController import PresetFormController
-from modulos.GUI.PresetFormGUI.PresetFormView import PresetFormView
-from modulos.GUI.PresetFormGUI.PresetFormData import PresetFormData
+from modulos.GUI.Forms.PresetFormGUI.PresetFormController import PresetFormController
+from modulos.GUI.Forms.PresetFormGUI.PresetFormView import PresetFormView
+from modulos.GUI.Forms.PresetFormGUI.PresetFormData import PresetFormData
 from util.Event import SimpleEvent
 
 

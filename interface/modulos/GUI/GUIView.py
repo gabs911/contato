@@ -1,5 +1,5 @@
-from modulos.GUI.PresetFormGUI.PresetFormData import PresetFormData
-from modulos.GUI.PresetFormGUI.PresetFormModule import PresetFormModule
+from modulos.GUI.Forms.PresetFormGUI.PresetFormData import PresetFormData
+from modulos.GUI.Forms.PresetFormGUI.PresetFormModule import PresetFormModule
 from util.TypeCheck import isInt
 from util.Event import SimpleEvent
 from tkinter import BOTTOM, LEFT, RIGHT, PhotoImage, StringVar, Tk, messagebox

@@ -1,8 +1,9 @@
-from modulos.GUI.PresetFormGUI.PresetFormData import PresetFormData
-from modulos.GUI.PresetFormGUI.PresetFormController import PresetFormController
+from modulos.GUI.Forms.FormView import FormView
+from modulos.GUI.Forms.PresetFormGUI.PresetFormData import PresetFormData
+from modulos.GUI.Forms.PresetFormGUI.PresetFormController import PresetFormController
 from util.TypeCheck import isInt
 from util.Event import SimpleEvent
-from tkinter import LEFT, RIGHT, TOP, StringVar, Tk, Toplevel
+from tkinter import BOTTOM, LEFT, RIGHT, TOP, StringVar, Tk, Toplevel
 from tkinter.ttk import Button, Combobox, Entry, Frame, Label, Spinbox
 
 def valida_angulo(valor):
@@ -11,40 +12,33 @@ def valida_angulo(valor):
     valor = int(valor)
     return valor > -359 and valor <= 360
 
-class PresetFormView:
+class PresetFormView(FormView):
     def __init__(self, tk: Tk, event: SimpleEvent, controller: PresetFormController, data: PresetFormData) -> None:
-        self.tk = tk
-        self.event = event
+        super().__init__(tk, event, data)
         self.controller = controller
-        self.data = data
-        self.noteFrames = []
-
-    def show(self) -> None:
-        self.root = Toplevel(self.tk)
-        self.root.geometry("")
-        self.root.focus_set()
-        self.data.root = self.root
-        self.data.converteParaView()
+        self.noteFrames = []        
+    
+    def construct(self) -> None:
+        super().construct()
+        #set Titulo
         if self.data.nome.get() == "":
             self.root.title("Novo Preset de notas")
         else:
             self.root.title(f"Editar Preset {self.data.nome.get()}")
         
         # Nome
-        self.nomeLabel = Label(self.root, text="Nome")
+        self.frame = Frame(self.root)
+        self.frame.pack()
+        self.nomeLabel = Label(self.frame, text="Nome")
         self.nomeLabel.grid(row=0, column=0, sticky='W')
-        self.nomeEntry = Entry(self.root, textvariable=self.data.nome)
+        self.nomeEntry = Entry(self.frame, textvariable=self.data.nome)
         self.nomeEntry.grid(row=0, column=1)
         
         # Notas
-        noteFrame = Frame(self.root, padding=[20])
+        noteFrame = Frame(self.frame, padding=[20])
         noteFrame.grid(row=1, column=0, columnspan=12)
 
         self.generateNotesFrame(noteFrame)
-        
-        # Salvar
-        self.buttonSave = Button(self.root, text="Salvar", command=self.save)
-        self.buttonSave.grid(row=2, column=0)
 
     def generateNotesFrame(self, root: Frame) -> None:
         # Ângulos
@@ -106,9 +100,4 @@ class PresetFormView:
         self.data.deletaNota()
         frame:Frame = self.noteFrames.pop()
         frame.destroy()
-        
-    def save(self):
-        self.event.invoke(self.data.converteParaSalvar())
-        self.root.destroy()
-        
 

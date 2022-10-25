@@ -1,13 +1,14 @@
 from tkinter import StringVar
 
+from modulos.GUI.Forms.FormData import FormData
 
-class PresetFormData:
+
+class PresetFormData(FormData):
     def __init__(self, data = None) -> None:
         self.item_data = data
         self.notas = []
         self.angulo_inicial: StringVar = None
         self.nome: StringVar = None
-        self.root = None
 
     def addNota(self, angulo: StringVar, id: StringVar) -> None:
         self.notas.append({
@@ -25,6 +26,7 @@ class PresetFormData:
         self.notas.pop()
     
     def converteParaView(self) -> None:
+        super().converteParaView()
         if self.item_data == None:
             self.angulo_inicial = StringVar(self.root, "0")
             self.nome = StringVar(self.root, "")
@@ -40,6 +42,7 @@ class PresetFormData:
         self.nome = StringVar(self.root, self.item_data["nome"])
 
     def converteParaSalvar(self):
+        super().converteParaSalvar()
         notas = []
         for nota in self.notas:
             notas.append({

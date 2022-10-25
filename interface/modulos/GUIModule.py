@@ -1,4 +1,4 @@
-from modulos.GUI.PresetFormGUI.PresetFormModule import PresetFormModule
+from modulos.GUI.Forms.PresetFormGUI.PresetFormModule import PresetFormModule
 from modulos.EletronicModule import BaseEletronicModule
 from modulos.GUI.GUIController import GUIController
 from modulos.GUI.GUIView import GUIView
