@@ -56,6 +56,9 @@ class GUIData:
             case GUIButtonState.PARADO:
                 self.calibrarButtonText.set("Calibrar")
                 self.calibrarButton.state(["!disabled"])
+    
+    def setAccelPreset(self, accelPreset):
+        self.accelPreset = accelPreset
 
 
 

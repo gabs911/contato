@@ -31,6 +31,12 @@ class MockMidiService(MidiService):
     def __init__(self) -> None:
         pass
 
+    def setup(self, port):
+        print(f"<Mock> MIDI setup for port: {port}")
+
+    def teardown(self):
+        print("<Mock> MIDI teardown")
+
     def send(self, canal, on, note, velocity):
         print(f"canal: {canal}\nnota: {note}\non: {on}\nvelocity: {velocity}")
         print("-----------------------------------------------------")

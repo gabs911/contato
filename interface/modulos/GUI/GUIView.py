@@ -1,3 +1,5 @@
+from modulos.GUI.Components.PresetListComponent import PresetListComponent
+from modulos.GUI.Components.AccelPresetComponent import AccelPresetComponent
 from modulos.GUI.Forms.PresetFormGUI.PresetFormData import PresetFormData
 from modulos.GUI.Forms.PresetFormGUI.PresetFormModule import PresetFormModule
 from util.TypeCheck import isInt
@@ -176,10 +178,9 @@ class GUIView:
         self.generateAccelPresetFrame(frame)
 
     def generateAccelPresetFrame(self, root):
-        frame = Frame(root, padding=[5], style=self.PRESET_BACKGROUND_FRAME)
-        frame.grid(row=2, column=0)
-        for item in self.controller.getAccelPresets():
-            self.generateAccelPreset(frame, item)
+        presetList = PresetListComponent(root, presetList=self.controller.getAccelPresets(),
+            dataSetter=self.data.setAccelPreset, component=AccelPresetComponent)
+        presetList.show()
 
     def generateAccelPreset(self, root, item):
         def select(widget: Widget):
