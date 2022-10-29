@@ -273,7 +273,7 @@ class GUIView:
     def toggleTocar(self):
         if (self.data.buttonText.get() == "Tocar"):
             guiInfo = self.getGUIInfo()
-            if(guiInfo.getAccelPreset != None) and (guiInfo.getNotePreset() != None):
+            if(guiInfo.getAccelPreset() != None) and (guiInfo.getNotePreset() != None):
                 self.data.setButtonState(GUIButtonState.INICIANDO)
                 self.root.after(1, lambda: self.controller.start(self.root, self.getGUIInfo()))
         elif (self.data.buttonText.get() == "Parar"):

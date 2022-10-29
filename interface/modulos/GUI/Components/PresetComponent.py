@@ -1,10 +1,11 @@
-from tkinter import LEFT
-from tkinter.ttk import Frame, Widget
+from tkinter import LEFT, RIGHT
+from tkinter.ttk import Button, Frame, Widget
+from modulos.GUI.Forms.FormModule import FormModule
 from modulos.GUI.GUIData import GUIData
 
 
 class PresetComponent:
-    DEFAULT_FRAME = ''
+    DEFAULT_FRAME = 'TFrame'
 
     def __init__(self, root, frameToPreset, dataSetter, item, presetList) -> None:
         self.root = root
@@ -45,3 +46,24 @@ class PresetComponent:
         self.dataSetter(self.FrameToPreset[widget])
         self.presetList.selected = widget
         self.select(widget)
+    
+    def generateButtons(self, frame, noteFrame, root) -> None:
+        buttonFrame = Frame(frame, style=self.DEFAULT_FRAME)
+        buttonFrame.pack(anchor='e', side=RIGHT)
+        
+        #adiciona botão de editar
+        edit_button = Button(buttonFrame, text="Editar", command=lambda: self.generateEditButton(root, noteFrame), width=6)
+        edit_button.grid(row=0, column=0)
+
+        #adiciona botão de deletar
+        delete_button = Button(buttonFrame, image=self.delete_image, command=lambda: self.generateDelete(noteFrame))
+        delete_button.grid(row=0, column=1)
+    
+    def generateEditButton(self, root: Frame, presetFrame: Frame):
+        pass
+    
+    def generateDelete(self, presetFrame: Frame):
+        pass
+
+    def getPresetModule(self) -> FormModule:
+        pass
