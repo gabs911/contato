@@ -178,7 +178,7 @@ class GUIView:
         self.generateAccelPresetFrame(frame)
 
     def generateAccelPresetFrame(self, root):
-        presetList = PresetListComponent(root, presetList=self.controller.getAccelPresets(),
+        presetList = PresetListComponent(root,None, presetList=self.controller.getAccelPresets(),
             dataSetter=self.data.setAccelPreset, component=AccelPresetComponent)
         presetList.show()
 

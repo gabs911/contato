@@ -56,3 +56,10 @@ class FileService:
     def saveAccelPreset(self, item, nome: str) -> None:
         with open(self.ACCEL_PRESET_LOCATION + nome + ".json", 'w') as jsonfile:
             json.dump(item, jsonfile, indent=3)
+
+    def deleteAccel(self, nome: str) -> None:
+        accelPath = self.ACCEL_PRESET_LOCATION + nome + ".json"
+        if path.exists(accelPath):
+            remove(accelPath)
+        else:
+            print("Arquivo não existe")

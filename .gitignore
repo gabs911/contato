@@ -1,4 +1,4 @@
-#ignora arquivos gerados pelo vscode
+#ignora arquivos de configuração do vscode
 */.vscode*
 
 #ignora arquivos de cache do python
@@ -7,6 +7,8 @@
 
 # ignora os presets de notas geradas pelo programa
 interface/resources/presets/notas/*
+
+# ignora os presets de acelerômetero geradas pelo programa
 
 # ignora os resultados do build
 interface/output/*

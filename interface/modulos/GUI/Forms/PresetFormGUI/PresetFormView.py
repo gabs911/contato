@@ -16,7 +16,8 @@ class PresetFormView(FormView):
     def __init__(self, tk: Tk, event: SimpleEvent, controller: PresetFormController, data: PresetFormData) -> None:
         super().__init__(tk, event, data)
         self.controller = controller
-        self.noteFrames = []        
+        self.noteFrames = []
+        self.data: PresetFormData        
     
     def construct(self) -> None:
         super().construct()

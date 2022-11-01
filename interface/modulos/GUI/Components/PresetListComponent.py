@@ -10,8 +10,9 @@ from util.Event import SimpleEvent
 class PresetListComponent:
     PRESET_BACKGROUND_FRAME = 'Preset.Background.TFrame'
 
-    def __init__(self, root, presetList: list, dataSetter, component) -> None:
+    def __init__(self, root, parent, presetList: list, dataSetter, component) -> None:
         self.root = root
+        self.parent = parent
         self.presetList = presetList
         self.dataSetter = dataSetter
         self.frameToPreset = { }
@@ -26,7 +27,7 @@ class PresetListComponent:
         
         event = self.generateAddEvent()
         addButton = Button(self.frame, padding=[5], text="+",
-                command=lambda: self.generateCreateNoteForm(self.frame, event))
+                command=lambda: self.generateForm(self.frame, event))
         addButton.pack(anchor='s', side=BOTTOM)
     
     def factory(self, item, root):
@@ -41,6 +42,6 @@ class PresetListComponent:
         event.add_listenter(lambda preset: self.factory(preset, self.frame))
         return event
 
-    def generateCreateNoteForm(self, root: Tk, event: SimpleEvent, data = None):
+    def generateForm(self, root: Tk, event: SimpleEvent, data = None):
         formView = self.presetForm.createView(root, event, data)
         formView.show()

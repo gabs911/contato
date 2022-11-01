@@ -1,7 +1,9 @@
 from tkinter import LEFT, RIGHT
 from tkinter.ttk import Frame, Label
 from modulos.GUI.Components.PresetComponent import PresetComponent
+from modulos.GUI.Forms.AccelFormGUI.AccelFormData import AccelFormData
 from modulos.GUI.Forms.AccelFormGUI.AccelFormModule import AccelFormModule
+from modulos.GUI.Forms.FormData import FormData
 from modulos.GUI.Forms.FormModule import FormModule
 from modulos.GUI.GUIData import GUIData
 
@@ -20,10 +22,11 @@ class AccelPresetComponent (PresetComponent):
         label_valor.bind('<Button-1>', (lambda e: self.mouseFunc(e.widget.master)))
         # label_valor.grid(row=1, column=1, sticky='E')
         label_valor.pack(anchor='se', side=RIGHT)
-
-    def generateEditButton(self, root: Frame, presetFrame: Frame):
-        super().generateEditButton(root, presetFrame)
     
     def getPresetModule(self) -> FormModule:
         return AccelFormModule()
+    
+    def getFormData(self, item) -> FormData:
+        super().getFormData(item)
+        return AccelFormData(item)
         
