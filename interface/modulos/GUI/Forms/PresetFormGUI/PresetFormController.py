@@ -7,3 +7,9 @@ class PresetFormController(FormController):
     
     def getNotasPossiveis(self) -> list:
         return self.fileService.getNotasPossiveis()
+    
+    def savePreset(self, item, nome: str):
+        self.fileService.savePresetDeNotas(item, nome)
+    
+    def deletePreset(self, nome: str):
+        self.fileService.deleteNota(nome)

@@ -59,6 +59,9 @@ class GUIData:
     
     def setAccelPreset(self, accelPreset):
         self.accelPreset = accelPreset
+    
+    def setNotePreset(self, notePreset):
+        self.notePreset = notePreset
 
 
 

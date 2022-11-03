@@ -19,9 +19,9 @@ class PresetListComponent:
         self.component = component
         self.selected = ''
 
-    def show(self):
+    def show(self, row, column):
         self.frame = Frame(self.root, padding=[5], style=self.PRESET_BACKGROUND_FRAME)
-        self.frame.grid(row=2, column=0)
+        self.frame.grid(row=row, column=column)
         for item in self.presetList:
             self.factory(item, self.frame)
         

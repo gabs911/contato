@@ -1,4 +1,5 @@
 import json
+from math import floor
 from serial import SerialException
 from tkinter import Tk
 from modulos.GUI.GUIData import GUIButtonState
@@ -65,7 +66,7 @@ class GUIController:
     def endCalibrar(self):
         self.tk.after_cancel(self.scheduler)
         self.eletronicModule.teardown()
-        self.GUIData.accel.set(self.maiorAccel)
+        self.GUIData.accel.set(floor(self.maiorAccel))
         self.maiorAccel = 0
         print("Teste")
 

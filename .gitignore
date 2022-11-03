@@ -9,6 +9,7 @@
 interface/resources/presets/notas/*
 
 # ignora os presets de acelerômetero geradas pelo programa
+interface/resources/presets/acelerometero/*
 
 # ignora os resultados do build
 interface/output/*

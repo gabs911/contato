@@ -1,3 +1,4 @@
+from modulos.GUI.Components.NotePresetComponent import NotePresetComponent
 from modulos.GUI.Components.PresetListComponent import PresetListComponent
 from modulos.GUI.Components.AccelPresetComponent import AccelPresetComponent
 from modulos.GUI.Forms.PresetFormGUI.PresetFormData import PresetFormData
@@ -58,15 +59,18 @@ class GUIView:
         self.delete_image = PhotoImage(file="resources/imagens/trash.png")
 
     def generateNoteFrame(self, root):
+        # frame = Frame(root, padding=[5], style=self.PRESET_BACKGROUND_FRAME)
+        # frame.grid(row=0, column=0)
+        presetList = PresetListComponent(
+            root, None, presetList=self.controller.getNotePresets(),
+            dataSetter=self.data.setNotePreset, component=NotePresetComponent)
+        presetList.show(row=0, column=0)
+        # for item in self.controller.getNotePresets():
+        #     self.generateNotePreset(item, frame)
 
-        frame = Frame(root, padding=[5], style=self.PRESET_BACKGROUND_FRAME)
-        frame.grid(row=0, column=0)
-        for item in self.controller.getNotePresets():
-            self.generateNotePreset(item, frame)
-
-        addButton = Button(frame, padding=[5], text="+",
-                command=lambda: self.generateCreateNoteForm(frame))
-        addButton.pack(anchor='s', side=BOTTOM)
+        # addButton = Button(frame, padding=[5], text="+",
+        #         command=lambda: self.generateCreateNoteForm(frame))
+        # addButton.pack(anchor='s', side=BOTTOM)
 
     def generateNotePreset(self, item, root):       
         def select(widget: Widget):
@@ -127,13 +131,12 @@ class GUIView:
         delete_button = Button(buttonFrame, image=self.delete_image, command=lambda: self.deleteNoteForm(noteFrame))
         delete_button.grid(row=0, column=1)
         
-
     def generateCreateNoteForm(self, root: Frame, data = None):
         self.formEvent = SimpleEvent()
-        self.formEvent.add_listenter(lambda preset: self.generateNotePreset(preset, root))
-        self.formEvent.add_listenter(lambda preset: self.controller.savePresetDeNotas(preset, preset["nome"]))
-        self.formView = self.presetForm.createView(self.root, self.formEvent, data)
-        self.formView.show()
+        # self.formEvent.add_listenter(lambda preset: self.generateNotePreset(preset, root))
+        # self.formEvent.add_listenter(lambda preset: self.controller.savePresetDeNotas(preset, preset["nome"]))
+        # self.formView = self.presetForm.createView(self.root, self.formEvent, data)
+        # self.formView.show()
     
     def generateEditNoteForm(self, root: Frame, noteFrame: Frame):
         item = self.FrameToNotePreset[noteFrame]
@@ -171,51 +174,17 @@ class GUIView:
         #self.accel = StringVar(root, value="2")
         self.accel = Spinbox(frame, from_=0, to=500000,
             validate='all', validatecommand=(frame.register(isInt), '%P'),
-            increment=100, width=15,
+            increment=100, 
             textvariable=self.data.accel
             )
         self.accel.grid(row=1, column=0)
         self.generateAccelPresetFrame(frame)
 
     def generateAccelPresetFrame(self, root):
+
         presetList = PresetListComponent(root,None, presetList=self.controller.getAccelPresets(),
             dataSetter=self.data.setAccelPreset, component=AccelPresetComponent)
-        presetList.show()
-
-    def generateAccelPreset(self, root, item):
-        def select(widget: Widget):
-            widget.state(['selected'])
-            for child in widget.children.values():
-                select(child)
-        
-        def unselect(widget: Widget):
-            widget.state(['!selected'])
-            for child in widget.children.values():
-                unselect(child)
-       
-        def mouseFunc(widget: Widget):
-            if (type(self.selectedAccelPreset) == Frame):
-                unselect(self.selectedAccelPreset)
-            self.data.accelPreset = self.FrameToAccelPreset[widget]
-            self.selectedAccelPreset = widget
-            select(widget)
-        
-        frame = Frame(root, padding=[5], style=self.DEFAULT_FRAME)
-        frame.bind('<Button-1>', (lambda e: mouseFunc(e.widget)))
-        frame.pack(fill='x')
-
-        #nome do preset
-        label_nome = Label(frame, text= item['nome'])
-        label_nome.bind('<Button-1>', (lambda e: mouseFunc(e.widget.master)))
-        # label_nome.grid(row=0, column=0, sticky='W')
-        label_nome.pack(anchor='nw', side=LEFT)
-
-        label_valor = Label(frame, text=item["nota"], justify='right', padding=[0,20,0,0])
-        label_valor.bind('<Button-1>', (lambda e: mouseFunc(e.widget.master)))
-        # label_valor.grid(row=1, column=1, sticky='E')
-        label_valor.pack(anchor='se', side=RIGHT)
-
-        self.FrameToAccelPreset[frame] = item
+        presetList.show(row=2, column=0)
 
     def generateConnector(self, root):
         frame = Frame(root)
@@ -253,7 +222,6 @@ class GUIView:
             )
         MIDIrefreshButton.grid(row=3, column=1)
 
-    
     def generateButtons(self, root):
         frame = Frame(root)
         frame.grid(row=1, column=2, sticky='SE')
