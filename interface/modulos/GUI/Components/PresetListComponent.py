@@ -4,15 +4,16 @@ from tkinter.ttk import Button, Frame
 
 from modulos.GUI.Components.PresetComponent import PresetComponent
 from modulos.GUI.Forms.PresetFormGUI.PresetFormModule import PresetFormModule
+from modulos.FileService import FileService
 from util.Event import SimpleEvent
 
 
 class PresetListComponent:
     PRESET_BACKGROUND_FRAME = 'Preset.Background.TFrame'
 
-    def __init__(self, root, parent, presetList: list, dataSetter, component) -> None:
+    def __init__(self, root, fileService: FileService , presetList: list, dataSetter, component) -> None:
         self.root = root
-        self.parent = parent
+        self.fileService = fileService
         self.presetList = presetList
         self.dataSetter = dataSetter
         self.frameToPreset = { }
@@ -22,6 +23,8 @@ class PresetListComponent:
     def show(self, row, column):
         self.frame = Frame(self.root, padding=[5], style=self.PRESET_BACKGROUND_FRAME)
         self.frame.grid(row=row, column=column)
+        if len(self.presetList) == 0:
+            self.generateEmptyComponent()
         for item in self.presetList:
             self.factory(item, self.frame)
         
@@ -30,8 +33,12 @@ class PresetListComponent:
                 command=lambda: self.generateForm(self.frame, event))
         addButton.pack(anchor='s', side=BOTTOM)
     
+    def generateEmptyComponent(self):
+        presetComponent: PresetComponent = self.component(None, self.fileService, self.frameToPreset, self.dataSetter, None, self)
+        self.presetForm = presetComponent.getPresetModule()
+    
     def factory(self, item, root):
-        presetComponent: PresetComponent = self.component(root, self.frameToPreset, self.dataSetter, item, self)
+        presetComponent: PresetComponent = self.component(root, self.fileService, self.frameToPreset, self.dataSetter, item, self)
         self.presetForm = presetComponent.getPresetModule()
         presetComponent.show()
     

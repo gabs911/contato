@@ -1,11 +1,9 @@
 from modulos.GUI.Components.NotePresetComponent import NotePresetComponent
 from modulos.GUI.Components.PresetListComponent import PresetListComponent
 from modulos.GUI.Components.AccelPresetComponent import AccelPresetComponent
-from modulos.GUI.Forms.PresetFormGUI.PresetFormData import PresetFormData
 from modulos.GUI.Forms.PresetFormGUI.PresetFormModule import PresetFormModule
 from util.TypeCheck import isInt
-from util.Event import SimpleEvent
-from tkinter import BOTTOM, LEFT, RIGHT, PhotoImage, StringVar, Tk, messagebox
+from tkinter import PhotoImage, StringVar, Tk
 from tkinter.font import Font
 from tkinter.ttk import Button, Combobox, Entry, Frame, Label, Spinbox, Style, Widget
 from modulos.GUI.GUIData import GUIButtonState
@@ -59,111 +57,10 @@ class GUIView:
         self.delete_image = PhotoImage(file="resources/imagens/trash.png")
 
     def generateNoteFrame(self, root):
-        # frame = Frame(root, padding=[5], style=self.PRESET_BACKGROUND_FRAME)
-        # frame.grid(row=0, column=0)
         presetList = PresetListComponent(
-            root, None, presetList=self.controller.getNotePresets(),
+            root, fileService=self.controller.fileService, presetList=self.controller.getNotePresets(),
             dataSetter=self.data.setNotePreset, component=NotePresetComponent)
         presetList.show(row=0, column=0)
-        # for item in self.controller.getNotePresets():
-        #     self.generateNotePreset(item, frame)
-
-        # addButton = Button(frame, padding=[5], text="+",
-        #         command=lambda: self.generateCreateNoteForm(frame))
-        # addButton.pack(anchor='s', side=BOTTOM)
-
-    def generateNotePreset(self, item, root):       
-        def select(widget: Widget):
-            widget.state(['selected'])
-            for child in widget.children.values():
-                select(child)
-        
-        def unselect(widget: Widget):
-            widget.state(['!selected'])
-            for child in widget.children.values():
-                unselect(child)
-       
-        def mouseFunc(widget: Widget):
-            if (type(self.selected) == Frame):
-                unselect(self.selected)
-            self.data.notePreset = self.FrameToNotePreset[widget]
-            self.selected = widget
-            select(widget)
-
-        frame = Frame(root, padding=[5], style=self.DEFAULT_FRAME)
-        frame.pack(fill='x')
-
-        #frame para o preset da nota
-        noteFrame = Frame(frame, style=self.DEFAULT_FRAME)
-        noteFrame.bind('<Button-1>', (lambda e: mouseFunc(e.widget)))
-        noteFrame.pack(fill='x', expand=True, anchor='w', side=LEFT)
-        
-        #nome do preset
-        label_nome = Label(noteFrame, text=item['nome'])
-        label_nome.bind('<Button-1>', (lambda e: mouseFunc(e.widget.master)))
-        label_nome.grid(row=0, column=0, columnspan=12, sticky='W')
-
-        #valor do ângulo de inicio
-        label_inicio = Label(noteFrame, text=str(item['angulo_inicial']))
-        label_inicio.grid(row=2, column=0)
-        for zipper in zip(item['notas'], range(len(item['notas']))):
-            nota, i = zipper
-            #nome da nota
-            nota_nome = Label(noteFrame, text=nota["id"])
-            nota_nome.grid(row=1, column=2*i + 1)
-            #valor final do ângulo da nota
-            nota_valor_final = Label(noteFrame, text=nota['proximo_angulo'])
-            nota_valor_final.grid(row=2, column=2*i + 2)
-        #adiciona no map para ser encontrável depois
-        self.FrameToNotePreset[noteFrame] = item
-
-        self.generateNoteFrameButtons(frame, noteFrame, root, item)
-
-    def generateNoteFrameButtons(self, frame, noteFrame, root, item) -> None:
-        buttonFrame = Frame(frame, style=self.DEFAULT_FRAME)
-        buttonFrame.pack(anchor='e', side=RIGHT)
-        
-        #adiciona botão de editar
-        edit_button = Button(buttonFrame, text="Editar", command=lambda: self.generateEditNoteForm(root, noteFrame), width=6)
-        edit_button.grid(row=0, column=0)
-
-        #adiciona botão de deletar
-        delete_button = Button(buttonFrame, image=self.delete_image, command=lambda: self.deleteNoteForm(noteFrame))
-        delete_button.grid(row=0, column=1)
-        
-    def generateCreateNoteForm(self, root: Frame, data = None):
-        self.formEvent = SimpleEvent()
-        # self.formEvent.add_listenter(lambda preset: self.generateNotePreset(preset, root))
-        # self.formEvent.add_listenter(lambda preset: self.controller.savePresetDeNotas(preset, preset["nome"]))
-        # self.formView = self.presetForm.createView(self.root, self.formEvent, data)
-        # self.formView.show()
-    
-    def generateEditNoteForm(self, root: Frame, noteFrame: Frame):
-        item = self.FrameToNotePreset[noteFrame]
-        data = PresetFormData(item)
-        self.formEvent = SimpleEvent()
-        self.formEvent.add_listenter(lambda _: self.deleteNote(item, noteFrame))
-        self.formEvent.add_listenter(lambda preset: self.generateNotePreset(preset, root))
-        self.formEvent.add_listenter(lambda preset: self.controller.savePresetDeNotas(preset, preset["nome"]))
-        self.formView = self.presetForm.createView(self.root, self.formEvent, data)
-        self.formView.show()
-        
-    def deleteNoteForm(self, noteFrame: Frame) -> None:
-        item = self.FrameToNotePreset[noteFrame]
-        confirmacao = messagebox.askokcancel(
-            title="Confimação de deleção",
-            message=f"Tem certeza que deseja deletar o preset \"{item['nome']}\"?",
-            icon=messagebox.WARNING
-            )
-        if confirmacao:
-            self.deleteNote(item, noteFrame)
-    
-    def deleteNote(self, item, noteFrame: Frame) -> None:
-        print(item)
-        self.FrameToNotePreset.pop(noteFrame)
-        self.controller.fileService.deleteNota(item["nome"])
-        noteFrame.master.pack_forget()
-        noteFrame.master.destroy()
 
     def generateAccelFrame(self, root):
         frame = Frame(root)
@@ -182,7 +79,7 @@ class GUIView:
 
     def generateAccelPresetFrame(self, root):
 
-        presetList = PresetListComponent(root,None, presetList=self.controller.getAccelPresets(),
+        presetList = PresetListComponent(root,fileService=self.controller.fileService, presetList=self.controller.getAccelPresets(),
             dataSetter=self.data.setAccelPreset, component=AccelPresetComponent)
         presetList.show(row=2, column=0)
 

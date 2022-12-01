@@ -1,4 +1,6 @@
 {
-    "ambiente_eletronico":"producao",
-    "ambiente_midi":"producao"
+    "ambiente_eletronico": "producao",
+    "ambiente_midi": "producao",
+    "ambiente_file_service": "producao",
+    "app_name": "Contato"
 }

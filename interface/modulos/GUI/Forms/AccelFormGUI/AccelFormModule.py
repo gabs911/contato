@@ -10,9 +10,9 @@ from util.Event import SimpleEvent
 
 
 class AccelFormModule(FormModule):
-    def __init__(self) -> None:
+    def __init__(self, fileService: FileService) -> None:
         super().__init__()
-        self.controller = AccelFormController(FileService())
+        self.controller = AccelFormController(fileService)
 
     def createView(self, tk: Tk, event: SimpleEvent, data: FormData = None) -> FormView:
         super().createView(tk, event, data)

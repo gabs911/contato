@@ -9,8 +9,8 @@ from util.Event import SimpleEvent
 
 
 class PresetFormModule(FormModule):
-    def __init__(self) -> None:
-        self.controller = PresetFormController(FileService())
+    def __init__(self, fileService: FileService) -> None:
+        self.controller = PresetFormController(fileService)
 
     def createView(self, tk: Tk, event: SimpleEvent, data: PresetFormData = None) -> PresetFormView:
         if data == None:

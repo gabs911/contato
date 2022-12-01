@@ -1,14 +1,12 @@
 import json
-from lib2to3.pgen2.grammar import opmap
 from os import listdir, path, remove
 
 
 class FileService:
-    NOTE_PRESET_LOCATION = "resources/presets/notas/"
-    ACCEL_PRESET_LOCATION = "resources/presets/acelerometro/"
-    MAP_NOTES_LOCATION = "resources/map_notas.json"
-    
-    def __init__(self) -> None:
+    def __init__(self, appDataLocation = "") -> None:
+        self.NOTE_PRESET_LOCATION = appDataLocation + "resources/presets/notas/"
+        self.ACCEL_PRESET_LOCATION = appDataLocation + "resources/presets/acelerometro/"
+        self.MAP_NOTES_LOCATION = "resources/map_notas.json"
         self.ACCEL_PRESET_NAMES = filter(self.isJson, listdir(self.ACCEL_PRESET_LOCATION))
         self.NOTE_PRESET_NAMES = filter(self.isJson, listdir(self.NOTE_PRESET_LOCATION))
         self.notesMapCache = None

@@ -6,10 +6,11 @@ from modulos.GUI.Forms.AccelFormGUI.AccelFormModule import AccelFormModule
 from modulos.GUI.Forms.FormData import FormData
 from modulos.GUI.Forms.FormModule import FormModule
 from modulos.GUI.GUIData import GUIData
+from modulos.FileService import FileService
 
 class AccelPresetComponent (PresetComponent):
-    def __init__(self,root, frameToPreset, dataReference: GUIData, item, presetList) -> None:
-        super().__init__(root, frameToPreset, dataReference, item, presetList)
+    def __init__(self,root, fileService: FileService, frameToPreset, dataReference: GUIData, item, presetList) -> None:
+        super().__init__(root,fileService , frameToPreset, dataReference, item, presetList)
     
     def construct(self):
         #nome do preset
@@ -24,7 +25,7 @@ class AccelPresetComponent (PresetComponent):
         label_valor.pack(anchor='se', side=RIGHT)
     
     def getPresetModule(self) -> FormModule:
-        return AccelFormModule()
+        return AccelFormModule(self.fileService)
     
     def getFormData(self, item) -> FormData:
         super().getFormData(item)

@@ -6,6 +6,8 @@ try:
     app.run()
 except Exception as e:
     print("Erro durante execução do programa")
+    print(e)
+    input()
     raise e
 finally:
     print("Pressione 'Enter' para fechar")

@@ -3,13 +3,15 @@ from tkinter.ttk import Button, Frame, Widget
 from modulos.GUI.Forms.FormData import FormData
 from modulos.GUI.Forms.FormModule import FormModule
 from modulos.GUI.GUIData import GUIData
+from modulos.FileService import FileService
 from util.Event import SimpleEvent
 
 
 class PresetComponent:
     DEFAULT_FRAME = 'TFrame'
 
-    def __init__(self, root, frameToPreset: dict, dataSetter, item, presetList) -> None:
+    def __init__(self, root, fileService: FileService, frameToPreset: dict, dataSetter, item, presetList) -> None:
+        self.fileService = fileService
         self.root = root
         self.FrameToPreset = frameToPreset
         self.dataSetter = dataSetter

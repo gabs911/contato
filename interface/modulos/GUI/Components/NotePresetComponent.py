@@ -4,10 +4,11 @@ from modulos.GUI.Forms.FormData import FormData
 from modulos.GUI.Forms.FormModule import FormModule
 from modulos.GUI.Forms.PresetFormGUI.PresetFormData import PresetFormData
 from modulos.GUI.Forms.PresetFormGUI.PresetFormModule import PresetFormModule
+from modulos.FileService import FileService
 
 class NotePresetComponent(PresetComponent):
-    def __init__(self, root, frameToPreset: dict, dataSetter, item, presetList) -> None:
-        super().__init__(root, frameToPreset, dataSetter, item, presetList)
+    def __init__(self, root, fileService: FileService, frameToPreset: dict, dataSetter, item, presetList) -> None:
+        super().__init__(root, fileService, frameToPreset, dataSetter, item, presetList)
     
     def construct(self):
         super().construct()
@@ -32,4 +33,4 @@ class NotePresetComponent(PresetComponent):
         return PresetFormData(item)
     
     def getPresetModule(self) -> FormModule:
-        return PresetFormModule()
+        return PresetFormModule(self.fileService)

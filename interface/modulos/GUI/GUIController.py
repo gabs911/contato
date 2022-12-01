@@ -13,12 +13,12 @@ class GUIController:
     INTERVALO_DE_CHECAGEM = 1
     TOUCH_NOTE_VELOCITY = 100
 
-    def __init__(self, eletronicModule: BaseEletronicModule, midiService: MidiService) -> None:
+    def __init__(self, eletronicModule: BaseEletronicModule, midiService: MidiService, fileService: FileService) -> None:
         self.eletronicModule = eletronicModule
-        self.scheduler = ""
         self.midiService = midiService
+        self.fileService = fileService
+        self.scheduler = ""
         self.permite_accel = True
-        self.fileService = FileService()
         self.ultimaNota = ""
   
     def getAccelPresets(self) -> list:
