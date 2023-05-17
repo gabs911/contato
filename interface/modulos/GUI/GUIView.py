@@ -2,10 +2,10 @@ from modulos.GUI.Components.NotePresetComponent import NotePresetComponent
 from modulos.GUI.Components.PresetListComponent import PresetListComponent
 from modulos.GUI.Components.AccelPresetComponent import AccelPresetComponent
 from modulos.GUI.Forms.PresetFormGUI.PresetFormModule import PresetFormModule
-from util.TypeCheck import isInt
+from util.TypeCheck import isFloat
 from tkinter import PhotoImage, StringVar, Tk
 from tkinter.font import Font
-from tkinter.ttk import Button, Combobox, Entry, Frame, Label, Spinbox, Style, Widget
+from tkinter.ttk import Button, Combobox, Frame, Label, Spinbox, Style
 from modulos.GUI.GUIData import GUIButtonState
 
 from modulos.GUI.GUIController import GUIController
@@ -68,9 +68,9 @@ class GUIView:
         label = Label(frame, text='Acelerometro')
         label.grid(row=0, column=0)
         self.data.accel = StringVar(frame, "0")
-        #self.accel = StringVar(root, value="2")
         self.accel = Spinbox(frame, from_=0, to=500000,
-            validate='all', validatecommand=(frame.register(isInt), '%P'),
+            #a linha a seguir foi comentada porque a validação em cada frame faz com que não seja possível por valores com vírgula
+            #validate='all', validatecommand=(frame.register(isFloat), '%P'),
             increment=100, 
             textvariable=self.data.accel
             )

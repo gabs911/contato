@@ -20,8 +20,8 @@ class GUIData:
     def __init__(self) -> None:
         pass
     
-    def getAccel(self) -> int:
-        return int(self.accel.get())
+    def getAccel(self) -> float:
+        return float(self.accel.get())
 
     def getAccelPreset(self):
         if(self.accelPreset == None):

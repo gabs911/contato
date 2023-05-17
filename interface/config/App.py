@@ -15,8 +15,10 @@ class App:
         self.midiService = midiService
         self.fileService = fileService
 
-    # Inicia a módulo da interface com suas dependências
     def run(self):
+        '''
+        Injeta as dependências do módulo de Interface e o cria
+        '''
         print("Seu ambiente para o dispositivo eletronico é: " + self.eletronicEnv)
         print("Seu ambiente para MIDI é: " + self.midiEnv)
         print("Seu ambiente de arquivos é: " + self.fileEnv)

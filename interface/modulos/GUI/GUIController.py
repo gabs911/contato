@@ -1,4 +1,3 @@
-import json
 from math import floor
 from serial import SerialException
 from tkinter import Tk
@@ -88,7 +87,7 @@ class GUIController:
             self.processToque(eletronicData)
             self.processAccel(eletronicData)
         # pode aumentar o intervalo para testar com o Mock
-        self.scheduler = self.tk.after(self.INTERVALO_DE_CHECAGEM, self.process) # chama a si mesmo depois de um determinado período de tempo
+        self.scheduler = self.tk.after(2, self.process) # chama a si mesmo depois de um determinado período de tempo
     
     def processToque(self, eletronicData):
         '''@private'''
@@ -128,7 +127,7 @@ class GUIController:
 
             def setPermiteAccelTrue(self: GUIController):
                 self.permite_accel = True
-            self.tk.after(1000, lambda: setPermiteAccelTrue(self))
+            self.tk.after(1, lambda: setPermiteAccelTrue(self))
     
     def converteNota(self, nota) -> int:
         '''@private'''

@@ -18,16 +18,19 @@ class Config:
     PRODUCAO_STRING = "producao"
     DEV_STRING = "dev"
 
+    # Cria o módulo eletrônico baseado no ambiente
     EletronicModuleMap = {
-        TESTE_STRING : lambda prop: MockEletronicModule(),
-        PRODUCAO_STRING: lambda prop: EletronicModule()
+        TESTE_STRING : lambda :MockEletronicModule(),
+        PRODUCAO_STRING: lambda : EletronicModule()
     }
 
+    # Cria o Service de MIDI baseado no ambiente 
     MidiServiceMap = {
-        TESTE_STRING: lambda prop: MockMidiService(),
-        PRODUCAO_STRING: lambda prop: MidiService()
+        TESTE_STRING: lambda : MockMidiService(),
+        PRODUCAO_STRING: lambda : MidiService()
     }
 
+    # Cria o Service de arquivos baseado no ambiente
     FileServiceMap = {
         PRODUCAO_STRING: lambda prop: FileService(appDataLocation=getenv('LOCALAPPDATA').replace("\\", "/") + "/" + prop["app_name"] +"/"),
         DEV_STRING: lambda prop: FileService()
@@ -42,7 +45,7 @@ class Config:
         midiEnv = self.properties["ambiente_midi"]
         fileEnv = self.properties["ambiente_file_service"]
         return App(eletronicEnv, midiEnv, fileEnv,
-            self.EletronicModuleMap[eletronicEnv](self.properties),
-            self.MidiServiceMap[midiEnv](self.properties),
+            self.EletronicModuleMap[eletronicEnv](),
+            self.MidiServiceMap[midiEnv](),
             self.FileServiceMap[fileEnv](self.properties)
         )
