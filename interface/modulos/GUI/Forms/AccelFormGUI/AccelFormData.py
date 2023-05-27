@@ -9,14 +9,14 @@ class AccelFormData(FormData):
         self.nome: StringVar
         self.nota: IntVar
 
-    def converteParaSalvar(self):
+    def convertToSave(self):
         return {
             "nome": self.nome.get(),
             "canal": 1,
             "nota": self.nota.get()
         }
     
-    def converteParaView(self):
+    def convertForView(self):
         if self.item == None:
             self.nome = StringVar(self.root, "")
             self.nota = IntVar(self.root, 0)

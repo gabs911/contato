@@ -5,7 +5,7 @@ class MidiService:
         self.midiout = MidiOut()
         print(self.midiout.get_ports())
     
-    CONVERSOR_HEXADECIMAL = {
+    HEXADECIMAL_CONVERTER = {
         (0, False): 0x80,
         (0, True): 0x90,
         (1, False): 0x81,
@@ -13,16 +13,20 @@ class MidiService:
         }
 
     def listMIDIPorts(self):
+        '''lista as portas MIDI disponíveis'''
         return self.midiout.get_ports()
     
     def setup(self, port):
+        '''Abre uma conexão com a porta MIDI'''
         self.port = self.midiout.open_port(int(port))
     
     def teardown(self):
+        '''Fecha a conexão com a porta MIDI'''
         self.midiout.close_port()
 
     def send(self, canal, on, note, velocity):
-        self.midiout.send_message([self.CONVERSOR_HEXADECIMAL[(canal, on)], note, velocity])
+        '''Envia uma mensagem no canal MIDI'''
+        self.midiout.send_message([self.HEXADECIMAL_CONVERTER[(canal, on)], note, velocity])
         print(f"canal: {canal}\nnota: {note}\non: {on}\nvelocity: {velocity}")
         print("-----------------------------------------------------")
         pass

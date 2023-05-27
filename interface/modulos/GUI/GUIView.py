@@ -44,6 +44,7 @@ class GUIView:
         self.root.mainloop()
 
     def generateStyles(self):
+        '''Atribui cores e estados iniciais aos componentes da interface '''
         style = Style()
         style.configure(self.BACKGROUND_FRAME, background='white')
         style.configure(self.PRESET_BACKGROUND_FRAME, background='black')
@@ -57,12 +58,14 @@ class GUIView:
         self.delete_image = PhotoImage(file="resources/imagens/trash.png")
 
     def generateNoteFrame(self, root):
+        '''Cria o componente da GUI da lista de presets de notas'''
         presetList = PresetListComponent(
             root, fileService=self.controller.fileService, presetList=self.controller.getNotePresets(),
             dataSetter=self.data.setNotePreset, component=NotePresetComponent)
         presetList.show(row=0, column=0)
 
     def generateAccelFrame(self, root):
+        '''Cria o componente da GUI relacionada ao acelerômetro'''
         frame = Frame(root)
         frame.grid(row=0, column=1, padx=5)
         label = Label(frame, text='Acelerometro')
@@ -78,12 +81,13 @@ class GUIView:
         self.generateAccelPresetFrame(frame)
 
     def generateAccelPresetFrame(self, root):
-
+        '''Cria o componente da GUI da lista de Presets de acelerômetro'''
         presetList = PresetListComponent(root,fileService=self.controller.fileService, presetList=self.controller.getAccelPresets(),
             dataSetter=self.data.setAccelPreset, component=AccelPresetComponent)
         presetList.show(row=2, column=0)
 
     def generateConnector(self, root):
+        '''Cria os droplists de conexões bluetooth e conexões MIDI disponíveis'''
         frame = Frame(root)
         frame.grid(row=0, column=2)
 
@@ -120,41 +124,44 @@ class GUIView:
         MIDIrefreshButton.grid(row=3, column=1)
 
     def generateButtons(self, root):
+        '''Cria os botões de Tocar e Calibrar'''
         frame = Frame(root)
         frame.grid(row=1, column=2, sticky='SE')
 
         #Tocar
         self.data.buttonText = StringVar(root, value="Tocar")
-        self.button = Button(frame, textvariable=self.data.buttonText, command=self.toggleTocar)
+        self.button = Button(frame, textvariable=self.data.buttonText, command=self.togglePlay)
         self.data.button = self.button
         self.button.grid(row=0, column=1)
 
         #Calibrar
         self.data.calibrarButtonText = StringVar(root, value="Calibrar")
-        self.calibrarButton = Button(frame, textvariable=self.data.calibrarButtonText, command=self.toggleCalibrar)
+        self.calibrarButton = Button(frame, textvariable=self.data.calibrarButtonText, command=self.toggleCalibration)
         self.data.calibrarButton = self.calibrarButton
         self.calibrarButton.grid(row=0, column=0)
 
-    def toggleTocar(self):
-        if (self.data.buttonText.get() == "Tocar"):
-            guiInfo = self.getGUIInfo()
-            if(guiInfo.getAccelPreset() != None) and (guiInfo.getNotePreset() != None):
-                self.data.setButtonState(GUIButtonState.INICIANDO)
+    def togglePlay(self):
+        '''Troca o estado do botão de tocando para parado ou de parado para tocando'''
+        if (self.data.getPlayButtonState() == GUIButtonState.STOPED):
+            if(self.data.getAccelPreset() != None) and (self.data.getNotePreset() != None):
+                self.data.setPlayButtonState(GUIButtonState.STARTING)
                 self.root.after(1, lambda: self.controller.start(self.root, self.getGUIInfo()))
-        elif (self.data.buttonText.get() == "Parar"):
-            self.data.setButtonState(GUIButtonState.PARADO)
+        elif (self.data.getPlayButtonState() == GUIButtonState.RUNNING):
+            self.data.setPlayButtonState(GUIButtonState.STOPED)
             self.controller.end()
     
-    def toggleCalibrar(self):
-        if (self.data.calibrarButtonText.get() == "Calibrar"):
-            self.data.setCalibrarState(GUIButtonState.INICIANDO)
-            self.root.after(1, lambda: self.controller.startCalibrar(self.root, self.getGUIInfo()))
+    def toggleCalibration(self):
+        '''Troca o estado do botão de calibrar de calibrando para parado ou de parado para calibrando'''
+        if (self.data.getCalibrationButtonState() == GUIButtonState.STOPED):
+            self.data.setCalibrationButtonState(GUIButtonState.STARTING)
+            self.root.after(1, lambda: self.controller.startCalibration(self.root, self.getGUIInfo()))
         
-        elif (self.data.calibrarButtonText.get() == "Parar"):
-            self.data.setCalibrarState(GUIButtonState.PARADO)
-            self.controller.endCalibrar()
+        elif (self.data.getCalibrationButtonState() == GUIButtonState.RUNNING):
+            self.data.setCalibrationButtonState(GUIButtonState.STOPED)
+            self.controller.endCalibration()
     
     def getGUIInfo(self) -> GUIData:
+        '''Retorna as informações do estado da GUI'''
         return self.data
 
   

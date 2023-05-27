@@ -6,11 +6,11 @@ from util.Event import SimpleEvent
 from tkinter import BOTTOM, LEFT, RIGHT, TOP, StringVar, Tk, Toplevel
 from tkinter.ttk import Button, Combobox, Entry, Frame, Label, Spinbox
 
-def valida_angulo(valor):
-    if not isInt(valor):
+def validateAngle(value):
+    if not isInt(value):
         return False
-    valor = int(valor)
-    return valor > -359 and valor <= 360
+    value = int(value)
+    return value > -359 and value <= 360
 
 class PresetFormView(FormView):
     def __init__(self, tk: Tk, event: SimpleEvent, controller: PresetFormController, data: PresetFormData) -> None:
@@ -22,17 +22,17 @@ class PresetFormView(FormView):
     def construct(self) -> None:
         super().construct()
         #set Titulo
-        if self.data.nome.get() == "":
+        if self.data.name.get() == "":
             self.root.title("Novo Preset de notas")
         else:
-            self.root.title(f"Editar Preset {self.data.nome.get()}")
+            self.root.title(f"Editar Preset {self.data.name.get()}")
         
         # Nome
         self.frame = Frame(self.root)
         self.frame.pack()
         self.nomeLabel = Label(self.frame, text="Nome")
         self.nomeLabel.grid(row=0, column=0, sticky='W')
-        self.nomeEntry = Entry(self.frame, textvariable=self.data.nome)
+        self.nomeEntry = Entry(self.frame, textvariable=self.data.name)
         self.nomeEntry.grid(row=0, column=1)
         
         # Notas
@@ -42,6 +42,7 @@ class PresetFormView(FormView):
         self.generateNotesFrame(noteFrame)
 
     def generateNotesFrame(self, root: Frame) -> None:
+        '''Cria o componente de criação, edição e remoção de notas e ângulos'''
         # Ângulos
         self.angulosLabel = Label(root, text="Ângulos")
         self.angulosLabel.pack(anchor='nw', expand=True)        
@@ -50,7 +51,7 @@ class PresetFormView(FormView):
         self.anguloInicialEntry = Spinbox(root,
             from_= -359, to=360,
             wrap=True, textvariable=self.data.angulo_inicial,
-            validate='focusout', validatecommand=(self.tk.register(valida_angulo), '%P'),
+            validate='focusout', validatecommand=(self.tk.register(validateAngle), '%P'),
             width=5
             )
         self.anguloInicialEntry.pack(anchor='sw',side=LEFT)
@@ -71,13 +72,15 @@ class PresetFormView(FormView):
         deleteNoteButton.pack(side=TOP, anchor='e', expand=1)
         
     def generateNewNote(self, root: Frame):
-        nota = self.data.notaNula()
+        '''Gera um componente com uma nota com valores padrões'''
+        nota = self.data.NullNote()
         self.generateNote(root, nota)
-        self.data.addNota(nota["angulo"], nota["id"])
+        self.data.addNote(nota["angulo"], nota["id"])
     
     def generateNote(self, root: Frame, nota):
         '''
-        param 3 nota: nota no formato {"id", "angulo"}
+        Cria os componentes de GUI para uma nota passada
+        :nota: nota no formato {"id", "angulo"}
         '''
         frame = Frame(root, padding=[0,20, 0, 0])
         frame.pack(side=LEFT, anchor='w')
@@ -85,20 +88,21 @@ class PresetFormView(FormView):
 
         combobox = Combobox(frame, textvariable=nota["id"],
             width=4, height=5,
-            values=self.controller.getNotasPossiveis(), validate='all',
-            validatecommand=(self.tk.register(lambda v: v in self.controller.getNotasPossiveis() + [""]), '%P'))
+            values=self.controller.getPossibleNotes(), validate='all',
+            validatecommand=(self.tk.register(lambda v: v in self.controller.getPossibleNotes() + [""]), '%P'))
         combobox.grid(row=0, column=0)
 
         spinbox = Spinbox(frame,
             from_= -359, to=360,
             wrap=True, textvariable=nota["angulo"],
-            validate='all', validatecommand=(self.tk.register(valida_angulo), '%P'),
+            validate='all', validatecommand=(self.tk.register(validateAngle), '%P'),
             width=5
             )
         spinbox.grid(row=1, column=1)
 
     def deleteNote(self):
-        self.data.deletaNota()
+        '''Destroi os componentes GUI da nota e remove da lista'''
+        self.data.deleteNote()
         frame:Frame = self.noteFrames.pop()
         frame.destroy()
 

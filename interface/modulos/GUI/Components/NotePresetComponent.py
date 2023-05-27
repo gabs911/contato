@@ -13,21 +13,21 @@ class NotePresetComponent(PresetComponent):
     def construct(self):
         super().construct()
         #nome do preset
-        label_nome = Label(self.presetFrame, text=self.item['nome'])
-        label_nome.bind('<Button-1>', (lambda e: self.mouseFunc(e.widget.master)))
-        label_nome.grid(row=0, column=0, columnspan=12, sticky='W')
+        label_name = Label(self.presetFrame, text=self.item['nome'])
+        label_name.bind('<Button-1>', (lambda e: self.mouseFunc(e.widget.master)))
+        label_name.grid(row=0, column=0, columnspan=12, sticky='W')
 
         #valor do ângulo de inicio
-        label_inicio = Label(self.presetFrame, text=str(self.item['angulo_inicial']))
-        label_inicio.grid(row=2, column=0)
+        start_label = Label(self.presetFrame, text=str(self.item['angulo_inicial']))
+        start_label.grid(row=2, column=0)
         for zipper in zip(self.item['notas'], range(len(self.item['notas']))):
-            nota, i = zipper
+            note, i = zipper
             #nome da nota
-            nota_nome = Label(self.presetFrame, text=nota["id"])
-            nota_nome.grid(row=1, column=2*i + 1)
+            note_name = Label(self.presetFrame, text=note["id"])
+            note_name.grid(row=1, column=2*i + 1)
             #valor final do ângulo da nota
-            nota_valor_final = Label(self.presetFrame, text=nota['proximo_angulo'])
-            nota_valor_final.grid(row=2, column=2*i + 2)
+            next_note_angle = Label(self.presetFrame, text=note['proximo_angulo'])
+            next_note_angle.grid(row=2, column=2*i + 2)
     
     def getFormData(self, item) -> FormData:
         return PresetFormData(item)

@@ -10,6 +10,7 @@ from util.Event import SimpleEvent
 
 
 class AccelFormModule(FormModule):
+    '''Modulo de criação/edição de Presets de Notas'''
     def __init__(self, fileService: FileService) -> None:
         super().__init__()
         self.controller = AccelFormController(fileService)

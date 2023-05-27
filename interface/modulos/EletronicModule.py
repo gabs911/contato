@@ -3,10 +3,14 @@ from serial import Serial, STOPBITS_ONE
 from serial.tools.list_ports import comports
 
 class BaseEletronicModule:
-    '''Uma 'interface' que vai definir os métodos em comum no Mock e no real e prover a documentação das funções'''
+    '''
+    Uma 'interface' que vai definir os métodos em comum no Mock e no real e prover a documentação das funções
+    '''
         
     def setup(self, porta):
-        '''faz o setup do que vai ser necessário no programa'''
+        '''
+        Conecta o Bluetooth na porta especificada
+        '''
         
     def getData(self) -> Any:
         ''' 
@@ -14,9 +18,15 @@ class BaseEletronicModule:
         :return: os dados na forma de um json {"id", "giroscopio", "acelerometro", "toque"}
         '''
     def listCOMPorts(self):
+        '''
+        retorna uma lista dos nomes das portas COM
+        '''
         pass
 
     def teardown(self):
+        '''
+        Fecha a conexão com a porta COM
+        '''
         pass
 
 #implementacao da parte que vai interagir com as partes eletronicas
@@ -37,6 +47,7 @@ class EletronicModule(BaseEletronicModule):
         super().getData()
         if(self.serialPort.in_waiting > 0):
             serialString = self.serialPort.readline()
+            # a informação vem do Serial na forma id/giroscopio/acelerometro/toque
             sensorData = (serialString.decode('utf-8').split('/'))
 
             data = {

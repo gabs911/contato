@@ -9,6 +9,7 @@ from util.Event import SimpleEvent
 
 
 class PresetFormModule(FormModule):
+    '''Modulo de criação/edição de Presets de Notas'''
     def __init__(self, fileService: FileService) -> None:
         self.controller = PresetFormController(fileService)
 
