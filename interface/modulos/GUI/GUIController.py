@@ -9,7 +9,7 @@ from modulos.GUI.GUIData import GUIData
 
 
 class GUIController:
-    INTERVALO_DE_CHECAGEM = 1
+    CHECKING_INTERVAL = 1
     TOUCH_NOTE_VELOCITY = 100
 
     def __init__(self, eletronicModule: BaseEletronicModule, midiService: MidiService, fileService: FileService) -> None:
@@ -38,7 +38,7 @@ class GUIController:
     def startCalibration(self, tk: Tk, GUIData: GUIData):
         '''Inicializa processo de calibração '''
         self.GUIData = GUIData
-        self.scheduler = tk.after(self.INTERVALO_DE_CHECAGEM, self.processCalibration)
+        self.scheduler = tk.after(self.CHECKING_INTERVAL, self.processCalibration)
         self.tk = tk
         self.maiorAccel = 0
         try:
@@ -62,12 +62,12 @@ class GUIController:
         data = self.eletronicModule.getData()
         if (data != None):
             self.maiorAccel = max(self.maiorAccel, data["acelerometro"])
-        self.scheduler = self.tk.after(self.INTERVALO_DE_CHECAGEM, self.processCalibration)
+        self.scheduler = self.tk.after(self.CHECKING_INTERVAL, self.processCalibration)
 
     def start(self, tk: Tk, GUIData: GUIData):
         '''Faz o setup para tocar as notas e inicializa processamento dos dados do Contato'''
         self.GUIData = GUIData
-        self.scheduler = tk.after(self.INTERVALO_DE_CHECAGEM, self.process)
+        self.scheduler = tk.after(self.CHECKING_INTERVAL, self.process)
         self.tk = tk
         try:
             self.midiService.setup(int(self.GUIData.MIDIText.get().split(" ")[-1]))
@@ -75,6 +75,7 @@ class GUIController:
             self.GUIData.setPlayButtonState(GUIButtonState.RUNNING)
             print("Start")
         except SerialException:
+            # Caso ocorra qualquer erro na hora de inicializar, reseta o botão e termina o processo
             self.GUIData.setPlayButtonState(GUIButtonState.STOPED)
             self.end()
             raise
@@ -91,17 +92,17 @@ class GUIController:
         if(eletronicData != None):
             self.processTouch(eletronicData)
             self.processAccel(eletronicData)
-        # pode aumentar o intervalo para testar com o Mock
-        self.scheduler = self.tk.after(self.INTERVALO_DE_CHECAGEM, self.process) # chama a si mesmo depois de um determinado período de tempo
+        # chama a si mesmo depois de um determinado período de tempo
+        self.scheduler = self.tk.after(self.CHECKING_INTERVAL, self.process)
     
     def processTouch(self, eletronicData):
         '''Processa a informação de toque e giroscópio'''
         TOQUE_NOTE_DURATION = 200 # em milisegundos
         CANAL = 0
         nota = self.selectNote(self.GUIData, eletronicData)
-        if(eletronicData["toque"] >= 30):
+        if(eletronicData["toque"] == 0):
             self.ultimaNota = ""
-        if(nota is not None) and (eletronicData["toque"] < 30) and self.ultimaNota != nota:
+        if(nota is not None) and (eletronicData["toque"] == 1) and self.ultimaNota != nota:
             self.ultimaNota = nota
             self.send(CANAL, nota, self.TOUCH_NOTE_VELOCITY)
             self.tk.after(TOQUE_NOTE_DURATION, lambda: self.send(CANAL, nota, self.TOUCH_NOTE_VELOCITY, False))
@@ -120,20 +121,20 @@ class GUIController:
     def processAccel(self, eletronicData):
         '''Processa informações do acelerômetro'''
         ACCEL_PRESET = self.GUIData.getAccelPreset()
-        CANAL = ACCEL_PRESET["canal"]
-        NOTA = ACCEL_PRESET["nota"]
+        CHANNEL = ACCEL_PRESET["canal"]
+        NOTE = ACCEL_PRESET["nota"]
         ACCEL_NOTE_VELOCITY = 120
         ACCEL_NOTE_DURATION = 200 # em milisegundos
         if(eletronicData["acelerometro"] >= self.GUIData.getAccel()) and self.allow_accel:
-            self.send(CANAL, NOTA, ACCEL_NOTE_VELOCITY)
+            self.send(CHANNEL, NOTE, ACCEL_NOTE_VELOCITY)
             print(f"GUI: {self.GUIData.getAccel()}\nDisp: {eletronicData['acelerometro']}")
-            self.tk.after(ACCEL_NOTE_DURATION, lambda: self.send(CANAL, NOTA, ACCEL_NOTE_VELOCITY, False))
+            self.tk.after(ACCEL_NOTE_DURATION, lambda: self.send(CHANNEL, NOTE, ACCEL_NOTE_VELOCITY, False))
             self.allow_accel = False
             self.tk.after(ACCEL_NOTE_DURATION, lambda: self.setPermiteAccelTrue(self))
     
     def setPermiteAccelTrue(self):
         '''
-        Torna a variável que permite alterar tocar o acelerômetro true
+        Torna a variável que permite tocar o acelerômetro para true
         Por algum motivo o python exige que eu transforme em função para poder passar para o lambda e funcionar
         '''
         self.allow_accel = True

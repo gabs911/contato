@@ -14,7 +14,7 @@ class App:
 
     def run(self):
         '''
-        Cria o módulo de interface usando as dependêcias passadas para 
+        Cria o módulo de interface usando as dependêcias passadas pelo Config 
         '''
         
         gui = GUIModule(self.eletronicModule, self.midiService, self.fileService)
