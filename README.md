@@ -6,7 +6,7 @@
 
 ### Instalando Dependências
 
-É necessário python 3.7 ou posterior para executar o programa.<br>
+É necessário que a versão do python seja >= 3.7 e <= 3.10 para executar o programa.<br>
 Para instalar as dependências do projeto, garanta que a versão do pip seja 22.0.4 ou posterior e rode o arquivo [install_dependencies.sh](install_dependencies.sh) no terminal.
 
 ### Executando a Aplicação
@@ -17,14 +17,16 @@ o arquivo tem o seguinte formato:
 ```json
 {
   "ambiente_eletronico": "teste",
-  "ambiente_midi": "producao"
+  "ambiente_midi": "producao",
+  "ambiente_file_service": "dev",
+  "app_name": "Contato"
 }
 ```
 
 `ambiente_eletronico` e `ambiente_midi` aceitam os valores `"teste"` ou `"producao"`.  
 O valor `"teste"` significa que aquele componente vai ser executado como um Mock que simula o comportamento real.  
-O valor `"producao"` significa que aquele modulo vai executar utilizando a aquele componente.
-
+O valor `"producao"` significa que aquele modulo vai executar utilizando a aquele componente.  
+Para `ambiente_file_service` os valores possíveis são `"producao"` e `"dev"`. `"producao"` significa que o módulo de arquivos buscará os presets dentro de `LOCALAPPDATA` enquanto `"teste"` significa que buscará dentro da estrutura de arquivos do projeto. É recomendado usar `"dev"` para qualquer desenvolvimento e `"producao"` para quando for gerar um executável e instalador.  
 Em seguida, navegue para a pasta `interface` e execute o arquivo [main.py](interface/main.py) :<br>
 
 ```shell
