@@ -1,3 +1,5 @@
+from util.logFunction import log
+from logging import getLogger
 from typing import Any
 from serial import Serial, STOPBITS_ONE
 from serial.tools.list_ports import comports
@@ -32,17 +34,20 @@ class BaseEletronicModule:
 #implementacao da parte que vai interagir com as partes eletronicas
 class EletronicModule(BaseEletronicModule):
     def __init__(self) -> None:
-        pass
+        self.logger = getLogger('root')
 
+    @log
     def listCOMPorts(self):
         super().listCOMPorts()
-        print("recuperou lista")
+        self.logger.info("recuperou lista de portas COM")
         return list(map(lambda port: port.name , comports()))
 
+    @log
     def setup(self, porta):
         super().setup(porta)
         self.serialPort = Serial(port = porta, baudrate=115200, bytesize=8, timeout=2, stopbits=STOPBITS_ONE)
 
+    @log
     def getData(self) -> Any:
         super().getData()
         if(self.serialPort.in_waiting > 0):
@@ -56,8 +61,9 @@ class EletronicModule(BaseEletronicModule):
                 "acelerometro": float(sensorData[2]),
                 "toque": int(sensorData[3])
             }
-            print(data)
+            self.logger.info(f"informação do eletrônico: {data}")
             return data
     
+    @log
     def teardown(self):
         self.serialPort.close()

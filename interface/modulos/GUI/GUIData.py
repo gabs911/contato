@@ -1,5 +1,7 @@
+from util.logFunction import log
 from enum import Enum, auto
 from tkinter import StringVar
+from logging import getLogger
 
 class GUIButtonState (Enum):
     STARTING = auto()
@@ -20,24 +22,29 @@ class GUIData:
     calibrationButtonState: GUIButtonState = GUIButtonState.STOPED
     
     def __init__(self) -> None:
-        pass
+        self.logger = getLogger('root')
     
+    @log
     def getAccel(self) -> float:
         return float(self.accel.get())
 
+    @log
     def getAccelPreset(self):
         if(self.accelPreset == None):
-            print("Nenhum preset de acelerômetro selecionado")
+            self.logger.warning("Nenhum preset de acelerômetro selecionado")
         return self.accelPreset
 
+    @log
     def getNotePreset(self):
         if(self.notePreset == None):
-            print("Nenhum preset de nota selecionado")
+            self.logger.warning("Nenhum preset de nota selecionado")
         return self.notePreset
     
+    @log
     def getPlayButtonState(self) -> GUIButtonState:
         return self.playButtonState
     
+    @log
     def setPlayButtonState(self, state: GUIButtonState):
         '''Seta o estado do botão de tocar e altera o texto dele para indicar o novo estado'''
         self.playButtonState = state
@@ -52,9 +59,11 @@ class GUIData:
                 self.buttonText.set("Tocar")
                 self.button.state(["!disabled"])
 
+    @log
     def getCalibrationButtonState(self) -> GUIButtonState:
         return self.calibrationButtonState
     
+    @log
     def setCalibrationButtonState(self, state: GUIButtonState):
         '''Seta o estado do botão de calibrar e altera o texto dele para indicar o novo estado'''
         self.calibrationButtonState = state
@@ -69,9 +78,11 @@ class GUIData:
                 self.calibrarButtonText.set("Calibrar")
                 self.calibrarButton.state(["!disabled"])
     
+    @log
     def setAccelPreset(self, accelPreset):
         self.accelPreset = accelPreset
     
+    @log
     def setNotePreset(self, notePreset):
         self.notePreset = notePreset
 

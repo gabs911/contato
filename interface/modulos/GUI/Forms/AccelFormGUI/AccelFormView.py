@@ -5,6 +5,7 @@ from modulos.GUI.Forms.AccelFormGUI.AccelFormData import AccelFormData
 from modulos.GUI.Forms.FormData import FormData
 from modulos.GUI.Forms.FormView import FormView
 from util.Event import SimpleEvent
+from util.logFunction import log
 
 class AccelFormView(FormView):
     def __init__(self, tk: Tk, event: SimpleEvent, data: FormData, controller: AccelFormController) -> None:
@@ -12,6 +13,7 @@ class AccelFormView(FormView):
         self.controller = controller
         self.data: AccelFormData
     
+    @log
     def construct(self) -> None:
         super().construct()
         frame = Frame(self.root)

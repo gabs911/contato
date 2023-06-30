@@ -1,5 +1,5 @@
 from tkinter import StringVar
-
+from util.logFunction import log
 from modulos.GUI.Forms.FormData import FormData
 
 
@@ -10,6 +10,7 @@ class PresetFormData(FormData):
         self.angulo_inicial: StringVar = None
         self.name: StringVar = None
 
+    @log
     def addNote(self, angulo: StringVar, id: StringVar) -> None:
         '''Adiciona uma nota e ângulo final para a o preset'''
         self.notas.append({
@@ -17,6 +18,7 @@ class PresetFormData(FormData):
             "angulo":angulo
         })
     
+    @log
     def NullNote(self):
         '''Cria uma nota com valores padrões'''
         return {
@@ -24,10 +26,12 @@ class PresetFormData(FormData):
             "angulo": StringVar(self.root, "0")
         }
     
+    @log
     def deleteNote(self):
         '''Remove uma nota da lista de notas'''
         self.notas.pop()
     
+    @log
     def convertForView(self) -> None:
         super().convertForView()
         if self.item_data == None:
@@ -44,6 +48,7 @@ class PresetFormData(FormData):
         self.angulo_inicial = StringVar(self.root, self.item_data["angulo_inicial"])
         self.name = StringVar(self.root, self.item_data["nome"])
 
+    @log
     def convertToSave(self):
         super().convertToSave()
         notas = []

@@ -20,3 +20,6 @@ output/*
 
 # ignora arquivos gerados pela abertura de imagens no Windows
 *Thumbs.db
+
+# ignora arquivos de log gerados
+*.log

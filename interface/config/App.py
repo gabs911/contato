@@ -1,5 +1,6 @@
 
 #Essa é a classe do app 
+from logging import getLogger, info
 from modulos.EletronicModule import BaseEletronicModule
 from modulos.GUIModule import GUIModule
 from modulos.MidiService import MidiService
@@ -16,7 +17,8 @@ class App:
         '''
         Cria o módulo de interface usando as dependêcias passadas pelo Config 
         '''
-        
+        logger = getLogger('root')
+        logger.info('Application Started')
         gui = GUIModule(self.eletronicModule, self.midiService, self.fileService)
         gui.run()
 

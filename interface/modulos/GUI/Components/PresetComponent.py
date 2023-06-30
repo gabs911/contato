@@ -1,16 +1,19 @@
 from tkinter import LEFT, RIGHT, PhotoImage, messagebox
 from tkinter.ttk import Button, Frame, Widget
+from logging import getLogger
 from modulos.GUI.Forms.FormData import FormData
 from modulos.GUI.Forms.FormModule import FormModule
 from modulos.GUI.GUIData import GUIData
 from modulos.FileService import FileService
 from util.Event import SimpleEvent
+from util.logFunction import log
 
 
 class PresetComponent:
     '''Componente GUI de um Preset para ser usado na lista'''
     DEFAULT_FRAME = 'TFrame'
 
+    @log
     def __init__(self, root, fileService: FileService, frameToPreset: dict, dataSetter, item, presetList) -> None:
         self.fileService = fileService
         self.root = root
@@ -19,7 +22,9 @@ class PresetComponent:
         self.item = item
         self.presetList = presetList
         self.deleteImage = PhotoImage(file="resources/imagens/trash.png")
+        self.logger = getLogger('root')
 
+    @log
     def show(self):
         '''Cria a GUI do Preset'''
         self.frame = Frame(self.root, padding=[5], style=self.DEFAULT_FRAME)
@@ -39,18 +44,21 @@ class PresetComponent:
         '''Popula com os componentes de GUI especificos de cada implementação'''
         pass
 
+    @log
     def select(self, widget: Widget):
         '''Marca o preset como selecionado'''
         widget.state(['selected'])
         for child in widget.children.values():
             self.select(child)
 
+    @log
     def unselect(self, widget: Widget):
         '''Desmarca o preset como o selecionado'''
         widget.state(['!selected'])
         for child in widget.children.values():
             self.unselect(child)
 
+    @log
     def mouseFunc(self, widget: Widget):
         '''Seleciona o Preset alvo e desseleciona o previamente marcado como selecionado'''
         if (type(self.presetList.selected) == Frame):
@@ -59,6 +67,7 @@ class PresetComponent:
         self.presetList.selected = widget
         self.select(widget)
     
+    @log
     def generateButtons(self, frame, noteFrame, root) -> None:
         '''Cria os botões de editar e deletar o Preset'''
         buttonFrame = Frame(frame, style=self.DEFAULT_FRAME)
@@ -72,6 +81,7 @@ class PresetComponent:
         delete_button = Button(buttonFrame, image=self.deleteImage, command=lambda: self.generateDelete(noteFrame))
         delete_button.grid(row=0, column=1)
     
+    @log
     def generateEditButton(self, root: Frame, presetFrame: Frame):
         '''A função a ser chamada pelo botão de editar'''
         item = self.item
@@ -87,6 +97,7 @@ class PresetComponent:
         '''Passa os dados para a janela de edição de Preset'''
         pass    
     
+    @log
     def generateDelete(self, presetFrame: Frame):
         '''A função a ser chamada pelo botão de deletar'''
         item = self.FrameToPreset[presetFrame]
@@ -98,15 +109,17 @@ class PresetComponent:
         if confirmacao:
             self.deletePreset(item, presetFrame)
 
+    @log
     def deletePreset(self, item, presetFrame: Frame):
         '''Deleta o preset da lista e do sistema de arquivos'''
-        print(item)
+        self.logger.info(f"deleta preset de notas: {item}")
         self.FrameToPreset.pop(presetFrame)
         controller = self.getPresetModule().getController()
         controller.deletePreset(item["nome"])
         presetFrame.master.pack_forget()
         presetFrame.master.destroy()
 
+    @log
     def getPresetModule(self) -> FormModule:
         '''Cria o modulo da janela de edição/criação do Preset'''
         pass

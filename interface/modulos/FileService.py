@@ -1,5 +1,7 @@
 import json
 from os import listdir, path, remove
+from logging import getLogger
+from util.logFunction import log
 
 
 class FileService:
@@ -10,10 +12,12 @@ class FileService:
         self.ACCEL_PRESET_NAMES = filter(self.isJson, listdir(self.ACCEL_PRESET_LOCATION))
         self.NOTE_PRESET_NAMES = filter(self.isJson, listdir(self.NOTE_PRESET_LOCATION))
         self.notesMapCache = None
+        self.logger = getLogger('root')
     
     def isJson(self, s: str):
         return s.endswith(".json")
 
+    @log
     def getAccelPresets(self) -> list:
         '''retorna os presets de acelerômetro do sistema de arquivos'''
         accel_list = []
@@ -22,6 +26,7 @@ class FileService:
                 accel_list.append(json.load(jsonfile))
         return accel_list
 
+    @log
     def getNotePresets(self) -> list:
         '''retorna os presets de notas do sistema de arquivos'''
         note_list = []
@@ -30,6 +35,7 @@ class FileService:
                 note_list.append(json.load(jsonfile))
         return note_list 
 
+    @log
     def getPossibleNotes(self):
         '''retorna as notas possíveis do arquivo de mapeamento de notas'''
         if(self.notesMapCache == None):
@@ -37,6 +43,7 @@ class FileService:
                 self.notesMapCache = json.load(jsonfile)
         return list(self.notesMapCache.keys())
     
+    @log
     def getNoteConverter(self) -> dict:
         '''retorna o mapeamento de notas do sistema de arquivos'''
         if(self.notesMapCache == None):
@@ -44,24 +51,28 @@ class FileService:
                 self.notesMapCache = json.load(jsonfile)
         return self.notesMapCache
     
+    @log
     def saveNotesPreset(self, item, nome: str) -> None:
         with open(self.NOTE_PRESET_LOCATION + nome + ".json", 'w') as jsonfile:
             json.dump(item, jsonfile, indent=3)
     
+    @log
     def deleteNote(self, nome: str) -> None:
         notePath = self.NOTE_PRESET_LOCATION + nome + ".json"
         if path.exists(notePath):
             remove(notePath)
         else:
-            print("Arquivo não existe")
+            self.logger.warning("Arquivo de preset de notas que deseja deletar não existe")
 
+    @log
     def saveAccelPreset(self, item, nome: str) -> None:
         with open(self.ACCEL_PRESET_LOCATION + nome + ".json", 'w') as jsonfile:
             json.dump(item, jsonfile, indent=3)
 
+    @log
     def deleteAccel(self, nome: str) -> None:
         accelPath = self.ACCEL_PRESET_LOCATION + nome + ".json"
         if path.exists(accelPath):
             remove(accelPath)
         else:
-            print("Arquivo não existe")
+            self.logger.warning("Arquivo de preset de acelerômetro que deseja deletar não existe")

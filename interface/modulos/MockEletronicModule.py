@@ -1,4 +1,5 @@
 from time import sleep
+from util.logFunction import log
 from modulos.EletronicModule import BaseEletronicModule
 
 class MockEletronicModule(BaseEletronicModule):
@@ -9,14 +10,17 @@ class MockEletronicModule(BaseEletronicModule):
          (-1, 0), (-1, 0), (-1, 1), (49, 0), (100, 20), (90, 0)]
         self.data_index = 0
 
+    @log
     def setup(self, porta):
         super().setup(porta)
         sleep(2)
         print(porta)
 
+    @log
     def listCOMPorts(self):
         return ["COM3 (Mock)", "COM5 (Mock)", "COM7 (Mock)"]
 
+    @log
     def getData(self):
         giro = 360
         accel = 0
@@ -33,6 +37,7 @@ class MockEletronicModule(BaseEletronicModule):
         }
 
     
+    @log
     def teardown(self):
         super().teardown()
         self.data_index = 0

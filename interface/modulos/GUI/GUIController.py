@@ -1,6 +1,8 @@
 from math import floor
 from serial import SerialException
 from tkinter import Tk
+from logging import getLogger
+from util.logFunction import log
 from modulos.GUI.GUIData import GUIButtonState
 from modulos.EletronicModule import BaseEletronicModule
 from modulos.FileService import FileService
@@ -19,22 +21,29 @@ class GUIController:
         self.scheduler = ""
         self.allow_accel = True
         self.ultimaNota = ""
+        self.logger = getLogger('root')
   
+    @log
     def getAccelPresets(self) -> list:
         return self.fileService.getAccelPresets()
 
+    @log
     def getNotePresets(self) -> list:
         return self.fileService.getNotePresets()
 
+    @log
     def saveNotesPreset(self, item, nome: str) -> None:
         self.fileService.saveNotesPreset(item, nome)
 
+    @log
     def listCOMPorts(self):
         return self.eletronicModule.listCOMPorts()
 
+    @log
     def listMIDIPorts(self):
         return self.midiService.listMIDIPorts()
     
+    @log
     def startCalibration(self, tk: Tk, GUIData: GUIData):
         '''Inicializa processo de calibração '''
         self.GUIData = GUIData
@@ -49,14 +58,15 @@ class GUIController:
             self.endCalibration()
             raise
     
+    @log
     def endCalibration(self):
         '''Termina processo de calibração e seta o novo valor do acelerômetro'''
         self.tk.after_cancel(self.scheduler)
         self.eletronicModule.teardown()
         self.GUIData.accel.set(floor(self.maiorAccel))
         self.maiorAccel = 0
-        print("Teste")
 
+    @log
     def processCalibration(self):
         '''Função de uso interno da classe para processar a entrada de dados atual e agendar o novo processamento'''
         data = self.eletronicModule.getData()
@@ -64,6 +74,7 @@ class GUIController:
             self.maiorAccel = max(self.maiorAccel, data["acelerometro"])
         self.scheduler = self.tk.after(self.CHECKING_INTERVAL, self.processCalibration)
 
+    @log
     def start(self, tk: Tk, GUIData: GUIData):
         '''Faz o setup para tocar as notas e inicializa processamento dos dados do Contato'''
         self.GUIData = GUIData
@@ -73,19 +84,22 @@ class GUIController:
             self.midiService.setup(int(self.GUIData.MIDIText.get().split(" ")[-1]))
             self.eletronicModule.setup(self.GUIData.COMText.get())
             self.GUIData.setPlayButtonState(GUIButtonState.RUNNING)
-            print("Start")
-        except SerialException:
+            self.logger.info("Processamento iniciou")
+        except SerialException as e:
             # Caso ocorra qualquer erro na hora de inicializar, reseta o botão e termina o processo
             self.GUIData.setPlayButtonState(GUIButtonState.STOPED)
             self.end()
+            self.logger.exception(e)
             raise
 
+    @log
     def end(self):
         '''Termina processamento dos dados do Contato'''
         self.tk.after_cancel(self.scheduler)
         self.eletronicModule.teardown()
         self.midiService.teardown()
 
+    @log
     def process(self):
         '''Função de uso interno da classe para processar a entrada de dados atual e agendar o novo processamento'''
         eletronicData = self.eletronicModule.getData()
@@ -95,6 +109,7 @@ class GUIController:
         # chama a si mesmo depois de um determinado período de tempo
         self.scheduler = self.tk.after(self.CHECKING_INTERVAL, self.process)
     
+    @log
     def processTouch(self, eletronicData):
         '''Processa a informação de toque e giroscópio'''
         TOQUE_NOTE_DURATION = 200 # em milisegundos
@@ -107,6 +122,7 @@ class GUIController:
             self.send(CANAL, nota, self.TOUCH_NOTE_VELOCITY)
             self.tk.after(TOQUE_NOTE_DURATION, lambda: self.send(CANAL, nota, self.TOUCH_NOTE_VELOCITY, False))
     
+    @log
     def selectNote(self, GUIData: GUIData, eletronicData):
         '''Seleciona qual a nota deve ser tocada de acordo com o ângulo passado'''
         preset = GUIData.getNotePreset()
@@ -118,6 +134,7 @@ class GUIController:
                 return nota["id"]
         return None
 
+    @log
     def processAccel(self, eletronicData):
         '''Processa informações do acelerômetro'''
         ACCEL_PRESET = self.GUIData.getAccelPreset()
@@ -127,7 +144,7 @@ class GUIController:
         ACCEL_NOTE_DURATION = 200 # em milisegundos
         if(eletronicData["acelerometro"] >= self.GUIData.getAccel()) and self.allow_accel:
             self.send(CHANNEL, NOTE, ACCEL_NOTE_VELOCITY)
-            print(f"GUI: {self.GUIData.getAccel()}\nDisp: {eletronicData['acelerometro']}")
+            self.logger.info(f"Accel na GUI: {self.GUIData.getAccel()}")
             self.tk.after(ACCEL_NOTE_DURATION, lambda: self.send(CHANNEL, NOTE, ACCEL_NOTE_VELOCITY, False))
             self.allow_accel = False
             self.tk.after(ACCEL_NOTE_DURATION, lambda: self.setPermiteAccelTrue(self))
@@ -139,12 +156,14 @@ class GUIController:
         '''
         self.allow_accel = True
     
+    @log
     def convertNote(self, nota) -> int:
         '''Converte a nota do string para o id MIDI da nota, baseado no arquivo de mapeamento'''
         if(type(nota) is str):
             return self.fileService.getNoteConverter()[nota]
         return nota
 
+    @log
     def send(self, canal: int, nota, velocity: int, on = True):
         '''
         Envia a informação para o Midiout

@@ -2,5 +2,6 @@
     "ambiente_eletronico": "producao",
     "ambiente_midi": "producao",
     "ambiente_file_service": "dev",
-    "app_name": "Contato"
+    "app_name": "Contato",
+    "log_level": "DEBUG"
 }

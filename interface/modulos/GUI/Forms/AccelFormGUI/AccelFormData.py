@@ -1,5 +1,6 @@
 from tkinter import IntVar, StringVar
 from modulos.GUI.Forms.FormData import FormData
+from util.logFunction import log
 
 
 class AccelFormData(FormData):
@@ -9,6 +10,7 @@ class AccelFormData(FormData):
         self.nome: StringVar
         self.nota: IntVar
 
+    @log
     def convertToSave(self):
         return {
             "nome": self.nome.get(),
@@ -16,6 +18,7 @@ class AccelFormData(FormData):
             "nota": self.nota.get()
         }
     
+    @log
     def convertForView(self):
         if self.item == None:
             self.nome = StringVar(self.root, "")
