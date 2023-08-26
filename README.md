@@ -25,7 +25,7 @@ o arquivo tem o seguinte formato:
 ```
 
 `ambiente_eletronico` e `ambiente_midi` aceitam os valores `"teste"` ou `"producao"`.  
-O valor `"teste"` significa que aquele componente vai ser executado como um Mock que simula o comportamento real.  
+O valor `"teste"` significa que aquele componente vai ser executado como um Mock que simula o comportamento real mas não faz nenhuma conexão.  
 O valor `"producao"` significa que aquele modulo vai executar utilizando a aquele componente.  
 Para `ambiente_file_service` os valores possíveis são `"producao"` e `"dev"`. `"producao"` significa que o módulo de arquivos buscará os presets dentro de `LOCALAPPDATA` enquanto `"dev"` significa que buscará dentro da estrutura de arquivos do projeto. É recomendado usar `"dev"` para qualquer desenvolvimento e `"producao"` para quando for gerar um executável e instalador.  
 Para `log_level` os níveis, em ordem, são DEBUG, INFO, WARNING, CRITICAL e ERROR. Esse valor determina o nível do logger. Um Logger em um determinado nível vai logar toda informação do seu nível e de níveis superiores, por exemplo: Um logger de nível WARNING vai logar informação referentes aos níveis WARNING, CRITICAL e ERROR.  

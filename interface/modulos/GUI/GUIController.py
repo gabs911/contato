@@ -8,6 +8,7 @@ from modulos.EletronicModule import BaseEletronicModule
 from modulos.FileService import FileService
 from modulos.MidiService import MidiService
 from modulos.GUI.GUIData import GUIData
+from util.TypeCheck import isInt
 
 
 class GUIController:
@@ -58,7 +59,6 @@ class GUIController:
             self.endCalibration()
             raise
     
-    @log
     def endCalibration(self):
         '''Termina processo de calibração e seta o novo valor do acelerômetro'''
         self.tk.after_cancel(self.scheduler)
@@ -82,6 +82,7 @@ class GUIController:
         self.tk = tk
         try:
             self.midiService.setup(int(self.GUIData.MIDIText.get().split(" ")[-1]))
+            print(self.GUIData.COMText.get())
             self.eletronicModule.setup(self.GUIData.COMText.get())
             self.GUIData.setPlayButtonState(GUIButtonState.RUNNING)
             self.logger.info("Processamento iniciou")
@@ -142,12 +143,19 @@ class GUIController:
         NOTE = ACCEL_PRESET["nota"]
         ACCEL_NOTE_VELOCITY = 120
         ACCEL_NOTE_DURATION = 200 # em milisegundos
-        if(eletronicData["acelerometro"] >= self.GUIData.getAccel()) and self.allow_accel:
-            self.send(CHANNEL, NOTE, ACCEL_NOTE_VELOCITY)
+        print(f"{self.GUIData.getAccel()} - {self.allow_accel}")
+        if(self.mod(eletronicData["acelerometro"]) >= self.GUIData.getAccel() and self.allow_accel):
             self.logger.info(f"Accel na GUI: {self.GUIData.getAccel()}")
+            self.send(CHANNEL, NOTE, ACCEL_NOTE_VELOCITY)
             self.tk.after(ACCEL_NOTE_DURATION, lambda: self.send(CHANNEL, NOTE, ACCEL_NOTE_VELOCITY, False))
             self.allow_accel = False
-            self.tk.after(ACCEL_NOTE_DURATION, lambda: self.setPermiteAccelTrue(self))
+            self.tk.after(ACCEL_NOTE_DURATION, lambda: self.setPermiteAccelTrue())
+    
+    def mod(self, val):
+        if (val < 0):
+            return -val
+        return val
+
     
     def setPermiteAccelTrue(self):
         '''
@@ -159,7 +167,7 @@ class GUIController:
     @log
     def convertNote(self, nota) -> int:
         '''Converte a nota do string para o id MIDI da nota, baseado no arquivo de mapeamento'''
-        if(type(nota) is str):
+        if(not isInt(nota)):
             return self.fileService.getNoteConverter()[nota]
         return nota
 
