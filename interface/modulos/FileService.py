@@ -1,7 +1,7 @@
 import json
 from os import listdir, path, remove
 from logging import getLogger
-from util.logFunction import log
+from util.logFunction import log, logException
 
 
 class FileService:
@@ -17,7 +17,7 @@ class FileService:
     def isJson(self, s: str):
         return s.endswith(".json")
 
-    @log
+    @logException
     def getAccelPresets(self) -> list:
         '''retorna os presets de acelerômetro do sistema de arquivos'''
         accel_list = []
@@ -26,7 +26,7 @@ class FileService:
                 accel_list.append(json.load(jsonfile))
         return accel_list
 
-    @log
+    @logException
     def getNotePresets(self) -> list:
         '''retorna os presets de notas do sistema de arquivos'''
         note_list = []
@@ -35,7 +35,7 @@ class FileService:
                 note_list.append(json.load(jsonfile))
         return note_list 
 
-    @log
+    @logException
     def getPossibleNotes(self):
         '''retorna as notas possíveis do arquivo de mapeamento de notas'''
         if(self.notesMapCache == None):
@@ -43,7 +43,7 @@ class FileService:
                 self.notesMapCache = json.load(jsonfile)
         return list(self.notesMapCache.keys())
     
-    @log
+    @logException
     def getNoteConverter(self) -> dict:
         '''retorna o mapeamento de notas do sistema de arquivos'''
         if(self.notesMapCache == None):
@@ -51,12 +51,12 @@ class FileService:
                 self.notesMapCache = json.load(jsonfile)
         return self.notesMapCache
     
-    @log
+    @logException
     def saveNotesPreset(self, item, nome: str) -> None:
         with open(self.NOTE_PRESET_LOCATION + nome + ".json", 'w') as jsonfile:
             json.dump(item, jsonfile, indent=3)
     
-    @log
+    @logException
     def deleteNote(self, nome: str) -> None:
         notePath = self.NOTE_PRESET_LOCATION + nome + ".json"
         if path.exists(notePath):
@@ -64,12 +64,12 @@ class FileService:
         else:
             self.logger.warning("Arquivo de preset de notas que deseja deletar não existe")
 
-    @log
+    @logException
     def saveAccelPreset(self, item, nome: str) -> None:
         with open(self.ACCEL_PRESET_LOCATION + nome + ".json", 'w') as jsonfile:
             json.dump(item, jsonfile, indent=3)
 
-    @log
+    @logException
     def deleteAccel(self, nome: str) -> None:
         accelPath = self.ACCEL_PRESET_LOCATION + nome + ".json"
         if path.exists(accelPath):

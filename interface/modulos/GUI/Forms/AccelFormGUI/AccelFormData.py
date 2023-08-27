@@ -1,6 +1,6 @@
 from tkinter import IntVar, StringVar
 from modulos.GUI.Forms.FormData import FormData
-from util.logFunction import log
+from util.logFunction import log, logException
 
 
 class AccelFormData(FormData):

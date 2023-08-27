@@ -1,4 +1,4 @@
-from util.logFunction import log
+from util.logFunction import log, logException
 from enum import Enum, auto
 from tkinter import StringVar
 from logging import getLogger
@@ -24,27 +24,27 @@ class GUIData:
     def __init__(self) -> None:
         self.logger = getLogger('root')
     
-    @log
+    @logException
     def getAccel(self) -> float:
         return float(self.accel.get())
 
-    @log
+    @logException
     def getAccelPreset(self):
         if(self.accelPreset == None):
             self.logger.warning("Nenhum preset de acelerômetro selecionado")
         return self.accelPreset
 
-    @log
+    @logException
     def getNotePreset(self):
         if(self.notePreset == None):
             self.logger.warning("Nenhum preset de nota selecionado")
         return self.notePreset
     
-    @log
+    @logException
     def getPlayButtonState(self) -> GUIButtonState:
         return self.playButtonState
     
-    @log
+    @logException
     def setPlayButtonState(self, state: GUIButtonState):
         '''Seta o estado do botão de tocar e altera o texto dele para indicar o novo estado'''
         self.playButtonState = state
@@ -59,11 +59,11 @@ class GUIData:
                 self.buttonText.set("Tocar")
                 self.button.state(["!disabled"])
 
-    @log
+    @logException
     def getCalibrationButtonState(self) -> GUIButtonState:
         return self.calibrationButtonState
     
-    @log
+    @logException
     def setCalibrationButtonState(self, state: GUIButtonState):
         '''Seta o estado do botão de calibrar e altera o texto dele para indicar o novo estado'''
         self.calibrationButtonState = state
@@ -78,11 +78,11 @@ class GUIData:
                 self.calibrarButtonText.set("Calibrar")
                 self.calibrarButton.state(["!disabled"])
     
-    @log
+    @logException
     def setAccelPreset(self, accelPreset):
         self.accelPreset = accelPreset
     
-    @log
+    @logException
     def setNotePreset(self, notePreset):
         self.notePreset = notePreset
 

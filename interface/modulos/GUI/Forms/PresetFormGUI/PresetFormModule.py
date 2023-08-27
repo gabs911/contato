@@ -6,14 +6,14 @@ from modulos.GUI.Forms.PresetFormGUI.PresetFormController import PresetFormContr
 from modulos.GUI.Forms.PresetFormGUI.PresetFormView import PresetFormView
 from modulos.GUI.Forms.PresetFormGUI.PresetFormData import PresetFormData
 from util.Event import SimpleEvent
-from util.logFunction import log
+from util.logFunction import log, logException
 
 class PresetFormModule(FormModule):
     '''Modulo de criação/edição de Presets de Notas'''
     def __init__(self, fileService: FileService) -> None:
         self.controller = PresetFormController(fileService)
 
-    @log
+    @logException
     def createView(self, tk: Tk, event: SimpleEvent, data: PresetFormData = None) -> PresetFormView:
         if data == None:
             data = PresetFormData()

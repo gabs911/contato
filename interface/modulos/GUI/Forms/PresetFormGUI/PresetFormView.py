@@ -5,7 +5,7 @@ from util.TypeCheck import isInt
 from util.Event import SimpleEvent
 from tkinter import BOTTOM, LEFT, RIGHT, TOP, StringVar, Tk, Toplevel
 from tkinter.ttk import Button, Combobox, Entry, Frame, Label, Spinbox
-from util.logFunction import log
+from util.logFunction import log, logException
 
 def validateAngle(value):
     if not isInt(value):
@@ -20,7 +20,7 @@ class PresetFormView(FormView):
         self.noteFrames = []
         self.data: PresetFormData        
     
-    @log
+    @logException
     def construct(self) -> None:
         super().construct()
         #set Titulo
@@ -43,7 +43,7 @@ class PresetFormView(FormView):
 
         self.generateNotesFrame(noteFrame)
 
-    @log
+    @logException
     def generateNotesFrame(self, root: Frame) -> None:
         '''Cria o componente de criação, edição e remoção de notas e ângulos'''
         # Ângulos
@@ -74,14 +74,14 @@ class PresetFormView(FormView):
         deleteNoteButton = Button(buttonFrame, text='-', command=self.deleteNote)
         deleteNoteButton.pack(side=TOP, anchor='e', expand=1)
         
-    @log
+    @logException
     def generateNewNote(self, root: Frame):
         '''Gera um componente com uma nota com valores padrões'''
         nota = self.data.NullNote()
         self.generateNote(root, nota)
         self.data.addNote(nota["angulo"], nota["id"])
     
-    @log
+    @logException
     def generateNote(self, root: Frame, nota):
         '''
         Cria os componentes de GUI para uma nota passada
@@ -105,7 +105,7 @@ class PresetFormView(FormView):
             )
         spinbox.grid(row=1, column=1)
 
-    @log
+    @logException
     def deleteNote(self):
         '''Destroi os componentes GUI da nota e remove da lista'''
         self.data.deleteNote()

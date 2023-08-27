@@ -3,7 +3,7 @@ from tkinter import BOTTOM, Tk, Toplevel
 from tkinter.ttk import Button
 from modulos.GUI.Forms.FormData import FormData
 from util.Event import SimpleEvent
-from util.logFunction import log
+from util.logFunction import log, logException
 
 class FormView:
     '''Esqueleto para a janela de criação/edição do preset'''
@@ -12,7 +12,7 @@ class FormView:
         self.tk = tk
         self.data = data
     
-    @log
+    @logException
     def show(self) -> None:
         '''Cria a uma nova janela e converte os dados do Preset para a View'''
         self.root = Toplevel(self.tk)
@@ -30,7 +30,7 @@ class FormView:
         '''Popula a janela com os componentes de GUI nas implementações das subclasses'''
         pass
 
-    @log
+    @logException
     def save(self):
         '''Passa as informações convertidas para o evento de salvar e fecha a janela'''
         self.event.invoke(self.data.convertToSave())

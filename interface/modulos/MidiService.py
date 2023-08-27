@@ -1,6 +1,6 @@
 from rtmidi import MidiOut
 from logging import getLogger
-from util.logFunction import log
+from util.logFunction import log, logException
 
 
 class MidiService:
@@ -16,30 +16,34 @@ class MidiService:
         (1, True): 0x91,
     }
 
-    @log
+    def hexadecimalConverter(self, canal, on):
+        if (canal > 15):
+            self.logger.warn("Canal inválido, alterando para 15")
+            canal = 15
+        if (on):
+            return 0x90 + canal
+        else:
+            return 0x80 + canal
+
     def listMIDIPorts(self):
         """lista as portas MIDI disponíveis"""
         return self.midiout.get_ports()
 
-    @log
     def setup(self, port):
         """Abre uma conexão com a porta MIDI"""
         self.port = self.midiout.open_port(int(port))
 
-    @log
     def teardown(self):
         """Fecha a conexão com a porta MIDI"""
         self.midiout.close_port()
 
-    @log
     def send(self, canal, on, note, velocity):
         """Envia uma mensagem no canal MIDI"""
         print("teste")
-        self.midiout.send_message(
-            [self.HEXADECIMAL_CONVERTER[(canal, on)], note, velocity]
-        )
+        statusByte = self.hexadecimalConverter(canal, on)
+        self.midiout.send_message([statusByte, note, velocity])
         self.logger.info(
-            f"mensagem MIDI: canal: {canal}\nnota: {note}\non: {on}\nvelocity: {velocity}"
+            f"mensagem MIDI: canal: {canal}\nnota: {note}\non: {on}\nvelocity: {velocity}\n(statusByte): {statusByte}"
         )
 
 

@@ -1,4 +1,4 @@
-from util.logFunction import log
+from util.logFunction import logException
 from logging import getLogger
 from modulos.GUI.Components.NotePresetComponent import NotePresetComponent
 from modulos.GUI.Components.PresetListComponent import PresetListComponent
@@ -45,7 +45,7 @@ class GUIView:
 
         self.root.mainloop()
 
-    @log
+    @logException
     def generateStyles(self):
         '''Atribui cores e estados iniciais aos componentes da interface '''
         style = Style()
@@ -60,7 +60,7 @@ class GUIView:
         )
         self.delete_image = PhotoImage(file="resources/imagens/trash.png")
 
-    @log
+    @logException
     def generateNoteFrame(self, root):
         '''Cria o componente da GUI da lista de presets de notas'''
         presetList = PresetListComponent(
@@ -68,7 +68,7 @@ class GUIView:
             dataSetter=self.data.setNotePreset, component=NotePresetComponent)
         presetList.show(row=0, column=0)
 
-    @log
+    @logException
     def generateAccelFrame(self, root):
         '''Cria o componente da GUI relacionada ao acelerômetro'''
         frame = Frame(root)
@@ -85,14 +85,14 @@ class GUIView:
         self.accel.grid(row=1, column=0)
         self.generateAccelPresetFrame(frame)
 
-    @log
+    @logException
     def generateAccelPresetFrame(self, root):
         '''Cria o componente da GUI da lista de Presets de acelerômetro'''
         presetList = PresetListComponent(root,fileService=self.controller.fileService, presetList=self.controller.getAccelPresets(),
             dataSetter=self.data.setAccelPreset, component=AccelPresetComponent)
         presetList.show(row=2, column=0)
 
-    @log
+    @logException
     def generateConnector(self, root):
         '''Cria os droplists de conexões bluetooth e conexões MIDI disponíveis'''
         frame = Frame(root)
@@ -130,7 +130,7 @@ class GUIView:
             )
         MIDIrefreshButton.grid(row=3, column=1)
 
-    @log
+    @logException
     def generateButtons(self, root):
         '''Cria os botões de Tocar e Calibrar'''
         frame = Frame(root)
@@ -159,7 +159,7 @@ class GUIView:
             self.data.setPlayButtonState(GUIButtonState.STOPED)
             self.controller.end()
     
-    @log
+    @logException
     def toggleCalibration(self):
         '''Troca o estado do botão de calibrar de calibrando para parado ou de parado para calibrando'''
         if (self.data.getCalibrationButtonState() == GUIButtonState.STOPED):
@@ -170,7 +170,7 @@ class GUIView:
             self.data.setCalibrationButtonState(GUIButtonState.STOPED)
             self.controller.endCalibration()
     
-    @log
+    @logException
     def getGUIInfo(self) -> GUIData:
         '''Retorna as informações do estado da GUI'''
         return self.data

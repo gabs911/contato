@@ -1,4 +1,4 @@
-from util.logFunction import log
+from util.logFunction import log, logException
 from logging import getLogger
 from typing import Any
 from serial import Serial, STOPBITS_ONE
@@ -39,27 +39,26 @@ class EletronicModule(BaseEletronicModule):
     def __init__(self) -> None:
         self.logger = getLogger("root")
 
-    @log
     def listCOMPorts(self):
         super().listCOMPorts()
         self.logger.info("recuperou lista de portas COM")
         return list(map(lambda port: port.name, comports()))
 
-    @log
     def setup(self, porta):
         super().setup(porta)
         self.serialPort = Serial(
             port=porta, baudrate=115200, bytesize=8, timeout=2, stopbits=STOPBITS_ONE
         )
 
-    @log
     def getData(self) -> Any:
         super().getData()
         if self.serialPort.in_waiting > 0:
             serialString = self.serialPort.readline()
             # a informação vem do Serial na forma id/giroscopio/acelerometro/toque
-            sensorData = serialString.decode("utf-8").split("/")
-            print("serialString:" + serialString.decode("utf-8"))
+            decodedSerialString = serialString.decode("utf-8")
+            self.logger.debug(f"serial string: {serialString}")
+            sensorData = decodedSerialString.split("/")
+            
 
             try:
                 data = {
@@ -74,6 +73,5 @@ class EletronicModule(BaseEletronicModule):
                 self.logger.warn("Could not extract serialString")
                 return None
 
-    @log
     def teardown(self):
         self.serialPort.close()

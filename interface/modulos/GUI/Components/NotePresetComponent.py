@@ -1,5 +1,5 @@
 from tkinter.ttk import Label
-from util.logFunction import log
+from util.logFunction import log, logException
 from modulos.GUI.Components.PresetComponent import PresetComponent
 from modulos.GUI.Forms.FormData import FormData
 from modulos.GUI.Forms.FormModule import FormModule
@@ -9,11 +9,11 @@ from modulos.FileService import FileService
 
 
 class NotePresetComponent(PresetComponent):
-    @log
+    @logException
     def __init__(self, root, fileService: FileService, frameToPreset: dict, dataSetter, item, presetList) -> None:
         super().__init__(root, fileService, frameToPreset, dataSetter, item, presetList)
     
-    @log
+    @logException
     def construct(self):
         super().construct()
         #nome do preset
@@ -33,10 +33,10 @@ class NotePresetComponent(PresetComponent):
             next_note_angle = Label(self.presetFrame, text=note['proximo_angulo'])
             next_note_angle.grid(row=2, column=2*i + 2)
     
-    @log
+    @logException
     def getFormData(self, item) -> FormData:
         return PresetFormData(item)
     
-    @log
+    @logException
     def getPresetModule(self) -> FormModule:
         return PresetFormModule(self.fileService)

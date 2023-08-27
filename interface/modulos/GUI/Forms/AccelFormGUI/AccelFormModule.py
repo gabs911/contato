@@ -7,7 +7,7 @@ from modulos.GUI.Forms.FormData import FormData
 from modulos.GUI.Forms.FormModule import FormModule
 from modulos.GUI.Forms.FormView import FormView
 from util.Event import SimpleEvent
-from util.logFunction import log
+from util.logFunction import log, logException
 
 
 class AccelFormModule(FormModule):
@@ -16,7 +16,7 @@ class AccelFormModule(FormModule):
         super().__init__()
         self.controller = AccelFormController(fileService)
 
-    @log
+    @logException
     def createView(self, tk: Tk, event: SimpleEvent, data: FormData = None) -> FormView:
         super().createView(tk, event, data)
         if data == None:

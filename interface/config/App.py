@@ -5,6 +5,8 @@ from modulos.EletronicModule import BaseEletronicModule
 from modulos.GUIModule import GUIModule
 from modulos.MidiService import MidiService
 from modulos.FileService import FileService
+from util.logFunction import logException
+
 
 
 class App:
@@ -13,6 +15,7 @@ class App:
         self.midiService = midiService
         self.fileService = fileService
 
+    @logException
     def run(self):
         '''
         Cria o módulo de interface usando as dependêcias passadas pelo Config 

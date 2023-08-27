@@ -1,6 +1,6 @@
 from tkinter import LEFT, RIGHT
 from tkinter.ttk import Frame, Label
-from util.logFunction import log
+from util.logFunction import log, logException
 from modulos.GUI.Components.PresetComponent import PresetComponent
 from modulos.GUI.Forms.AccelFormGUI.AccelFormData import AccelFormData
 from modulos.GUI.Forms.AccelFormGUI.AccelFormModule import AccelFormModule
@@ -10,11 +10,11 @@ from modulos.GUI.GUIData import GUIData
 from modulos.FileService import FileService
 
 class AccelPresetComponent (PresetComponent):
-    @log
+    @logException
     def __init__(self,root, fileService: FileService, frameToPreset, dataReference: GUIData, item, presetList) -> None:
         super().__init__(root,fileService , frameToPreset, dataReference, item, presetList)
     
-    @log
+    @logException
     def construct(self):
         #nome do preset
         label_nome = Label(self.presetFrame, text=self.item['nome'])
@@ -27,11 +27,11 @@ class AccelPresetComponent (PresetComponent):
         # label_valor.grid(row=1, column=1, sticky='E')
         label_valor.pack(anchor='se', side=RIGHT)
     
-    @log
+    @logException
     def getPresetModule(self) -> FormModule:
         return AccelFormModule(self.fileService)
     
-    @log
+    @logException
     def getFormData(self, item) -> FormData:
         super().getFormData(item)
         return AccelFormData(item)

@@ -6,7 +6,7 @@ from modulos.GUI.Components.PresetComponent import PresetComponent
 from modulos.GUI.Forms.PresetFormGUI.PresetFormModule import PresetFormModule
 from modulos.FileService import FileService
 from util.Event import SimpleEvent
-from util.logFunction import log
+from util.logFunction import log, logException
 
 
 class PresetListComponent:
@@ -22,7 +22,7 @@ class PresetListComponent:
         self.component = component
         self.selected = ''
 
-    @log
+    @logException
     def show(self, row, column):
         '''Cria componentes de GUI'''
         self.frame = Frame(self.root, padding=[5], style=self.PRESET_BACKGROUND_FRAME)
@@ -37,20 +37,20 @@ class PresetListComponent:
                 command=lambda: self.generateForm(self.frame, event))
         addButton.pack(anchor='s', side=BOTTOM)
     
-    @log
+    @logException
     def generateEmptyComponent(self):
         '''Cria um Preset vazio para sempre ter pelo menos um componente na lista'''
         presetComponent: PresetComponent = self.component(None, self.fileService, self.frameToPreset, self.dataSetter, None, self)
         self.presetForm = presetComponent.getPresetModule()
     
-    @log
+    @logException
     def factory(self, item, root):
         '''Cria o componente GUI para um Preset específico passado'''
         presetComponent: PresetComponent = self.component(root, self.fileService, self.frameToPreset, self.dataSetter, item, self)
         self.presetForm = presetComponent.getPresetModule()
         presetComponent.show()
     
-    @log
+    @logException
     def generateAddEvent(self):
         '''Cria o evento que vai ser ativado ao salvar uma criação/edição de Preset'''
         controller = self.presetForm.getController()
@@ -59,7 +59,7 @@ class PresetListComponent:
         event.add_listenter(lambda preset: self.factory(preset, self.frame))
         return event
 
-    @log
+    @logException
     def generateForm(self, root: Tk, event: SimpleEvent, data = None):
         '''Cria a janela de criação/edição de presets'''
         formView = self.presetForm.createView(root, event, data)

@@ -4,6 +4,8 @@ from modulos.GUI.GUIController import GUIController
 from modulos.GUI.GUIView import GUIView
 from modulos.MidiService import MidiService
 from modulos.FileService import FileService
+from util.logFunction import logException
+
 
 
 class GUIModule:
@@ -12,6 +14,7 @@ class GUIModule:
         self.midiService = midiService
         self.fileService = fileService
 
+    @logException
     def run(self):
         controller = GUIController(self.eletronicModule, self.midiService, self.fileService)
         GUIView(controller, PresetFormModule(self.fileService)).show()

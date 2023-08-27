@@ -1,3 +1,5 @@
+from util.logFunction import logException
+
 class SimpleEvent:
     def __init__(self) -> None:
         self.listeners = list()
@@ -8,6 +10,7 @@ class SimpleEvent:
     def clear(self) -> None:
         self.listeners.clear()
     
+    @logException
     def invoke(self, arg) -> None:
         for listener in self.listeners:
             listener(arg)
